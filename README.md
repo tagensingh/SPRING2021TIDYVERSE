@@ -1,11 +1,14 @@
 # SPRING2021TIDYVERSE
 
 # Sample 
-Initial Description
-Link
+Initial Description:
+Set up.  Creating a basic plot and flipping coordinates
+Link. 
+https://github.com/acatlin/SPRING2021TIDYVERSE/blob/main/ggplot_forcats.rmd
 
-Revision/Addition Description
-Link
+Revision/Addition Description:
+Using forcat to change ggplot2 sort order and combine categories
+Link. https://github.com/acatlin/SPRING2021TIDYVERSE/blob/main/ggplot_forcats.rmd
 ¬----
 
 
