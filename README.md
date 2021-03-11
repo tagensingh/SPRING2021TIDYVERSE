@@ -8,6 +8,7 @@ https://github.com/acatlin/SPRING2021TIDYVERSE/blob/main/ggplot_forcats.rmd
 
 Revision/Addition Description:
 Using forcat to change ggplot2 sort order and combine categories
+Please note that I chose to add the additonal functionality directly into the initial filter; alternatively (though less in the spirit of GitHub), you could create a _revised.Rmd file for your changes.
 Link. https://github.com/acatlin/SPRING2021TIDYVERSE/blob/main/ggplot_forcats.rmd
 ¬----
 
