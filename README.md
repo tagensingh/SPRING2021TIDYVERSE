@@ -203,8 +203,8 @@ Link
 
 
 # Claire M
-Initial Description
-Link
+Initial Description: Loads in FiveThirtyEight polling data, makes wider, and completes a basic plot.
+Link: https://github.com/acatlin/SPRING2021TIDYVERSE/blob/main/tidyverse_create_covidpolls.Rmd
 
 Revision/Addition Description
 Link
