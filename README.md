@@ -176,8 +176,8 @@ Link
 
 
 # Matthew L
-Initial Description
-Link
+Initial Description - Demonstrate efficient string manipulation functions from stringr.
+Link - https://github.com/acatlin/SPRING2021TIDYVERSE/tree/mattlucich
 
 Revision/Addition Description
 Link
