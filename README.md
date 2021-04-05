@@ -176,8 +176,9 @@ Link
 
 
 # Matthew L
-Initial Description
-Link
+Initial Description - Demonstrate efficient string manipulation functions from stringr.  
+Github - https://github.com/mattlucich/SPRING2021TIDYVERSE/tree/mattlucich  
+RPubs - https://rpubs.com/mlucich/stringr-dplyr-tibble  
 
 Revision/Addition Description
 Link
