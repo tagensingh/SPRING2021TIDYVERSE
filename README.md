@@ -329,8 +329,9 @@ Link
 
 
 # Jie Z
-Initial Description
-Link
+Initial: 
+[Github](https://github.com/Sugarcane-svg/R/blob/main/R607/Assignments/a6/tidy_dplyr.Rmd)
+[RPub](https://rpubs.com/Sugarcane_phz/748637)
 
 Revision/Addition Description
 Link
