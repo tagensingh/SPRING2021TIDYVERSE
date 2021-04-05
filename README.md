@@ -140,7 +140,7 @@ Link
 
 
 # Eric H
-Initial Description
+Initial Description: An Introduction to ggplot2 with special attention to the themes() element
 Link
 
 Revision/Addition Description
