@@ -122,8 +122,17 @@ Link
 
 
 # Ethan H
-Initial Description
-Link
+Initial Description  
+
+**This Rmd explores some of the Machine Learning basics of tidymodels, including using recipes inside of workflows to build modular pipelines. ** 
+
+**The data come from a 2019 Kaggle competition where people tried to predict how long it would take for dogs and cats in Malaysia to be adopted from rescue shelters. ** 
+
+**The ML models explored here are logistic regression classifiers and random forests. ** 
+
+[Link to the data on Kaggle](https://www.kaggle.com/c/petfinder-adoption-prediction/data)  
+[A blog by Paul Sharkey that helped me](https://pgshky.rbind.io/post/machine-learning-tidymodels/)  
+[A helpful tidymodels.org page](https://www.tidymodels.org/start/recipes/)   
 
 Revision/Addition Description
 Link
