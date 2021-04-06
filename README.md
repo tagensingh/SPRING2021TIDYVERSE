@@ -141,7 +141,8 @@ Link
 
 # Eric H
 Initial Description: An Introduction to ggplot2 with special attention to the themes() element
-Link
+
+Link: https://github.com/acatlin/SPRING2021TIDYVERSE/blob/main/Eric_Hirsch_607_GGPLOT2.Rmd
 
 Revision/Addition Description
 Link
