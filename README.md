@@ -214,8 +214,8 @@ Link
 
 
 # Daniel M
-Initial Description
-Link
+Working with date/times using Lubridate.
+RPubs: https://rpubs.com/dmoscoe/751068
 
 Revision/Addition Description
 Link
