@@ -214,7 +214,7 @@ Link
 
 
 # Daniel M
-Working with date/times using Lubridate.
+Working with date/times using Lubridate.  
 RPubs: https://rpubs.com/dmoscoe/751068
 
 Revision/Addition Description
