@@ -41,7 +41,7 @@ Link
 
 
 # Vic C
-Initial Description
+Initial Description: How to use ggplot to map data on a map
 Link
 
 Revision/Addition Description
