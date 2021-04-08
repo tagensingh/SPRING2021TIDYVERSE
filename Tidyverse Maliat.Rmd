@@ -1,0 +1,77 @@
+---
+title: "Tidyverse Recepie"
+author: "Maliat Islam"
+date: "4/8/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+### For the implementation of Tidyverse, I have selected Forcats and ggplot libraries from this package. I have selected Disney movies gross income dataset from the 1937-2016 from Kaggle.
+```{r}
+library(tidyverse)
+disney_movies_total_gross <- read.csv("https://raw.githubusercontent.com/maliat-hossain/FileProcessing/main/disney_movies_total_gross.csv")
+head(disney_movies_total_gross)
+```
+```{r}
+DisneyMovies<-disney_movies_total_gross %>% dplyr::select(1)
+DisneyMovies1<-DisneyMovies[1:10,]
+
+```
+
+
+```{r}
+DisneyMovies2<-factor(DisneyMovies1)
+view(DisneyMovies2)
+```
+
+```{r}
+library(forcats)
+DisneyMovies2<-fct_recode(DisneyMovies2 ,Musical="Snow White and the Seven Dwarfs" ,Adventure="Pinocchio",Musical="Fantasia",Adventure ="Song of the South",Drama="Cinderella",Adventure="20,000 Leagues Under the Sea",Drama="Lady and the Tramp",Drama="Sleeping Beauty",Comedy="101 Dalmatians",Comedy="The Absent Minded Professor")
+
+
+```
+
+```{r}
+view(DisneyMovies2)
+```
+
+```{r}
+DisneyMovies3<-disney_movies_total_gross %>% dplyr::select(1,5)
+DisneyMovies3<-DisneyMovies3[1:10,]
+```
+
+```{r}
+
+summary(DisneyMovies3)
+```
+
+```{r}
+library(dplyr)
+DisneyMovies4<-DisneyMovies3 %>%
+  mutate(
+    comparison_movies=case_when(
+      total_gross < 81219150 ~ "Below Average",
+      total_gross > 81219150  & total_gross <83810000 ~ "Around Average",
+      TRUE ~ "Above Average"
+      
+    )
+  )%>%
+  select(movie_title,total_gross,comparison_movies)
+```
+
+```{r}
+view(DisneyMovies4)
+```
+
+
+```{r}
+library(ggplot2)
+ggplot(data = DisneyMovies4, aes(x = movie_title, fill = comparison_movies)) +
+    geom_bar(position = "dodge")
+```
+
