@@ -42,7 +42,7 @@ Link
 
 # Vic C
 Initial Description: How to use ggplot to map data on a map
-Link
+Link: https://github.com/xvicxpx/SPRING2021TIDYVERSE/blob/main/Vic_Chan_GGPlot_Map.Rmd
 
 Revision/Addition Description
 Link
