@@ -32,8 +32,8 @@ Link
 
 
 # Gabriel C
-Initial Description
-Link
+Initial Description Using ggplot to create scatterplots, linegraph and histogram. Using reprex() to create a snippet of code.
+Link https://github.com/gcampos100/SPRING2021TIDYVERSE/edit/main/README.md
 
 Revision/Addition Description
 Link
