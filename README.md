@@ -41,8 +41,8 @@ Link
 
 
 # Vic C
-Initial Description
-Link
+Initial Description: How to use ggplot to map data on a map
+Link: https://github.com/xvicxpx/SPRING2021TIDYVERSE/blob/main/Vic_Chan_GGPlot_Map.Rmd
 
 Revision/Addition Description
 Link
