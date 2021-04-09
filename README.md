@@ -44,8 +44,11 @@ Link
 Initial Description: How to use ggplot to map data on a map
 Link: https://github.com/xvicxpx/SPRING2021TIDYVERSE/blob/main/Vic_Chan_GGPlot_Map.Rmd
 
-Revision/Addition Description
-Link
+Revision/Addition Description:
+Michael revised Vic's rmd by adding another map showing mass shootings and overlaying the
+new data points on the police shootings map.
+Link:
+https://github.com/mmippolito/SPRING2021TIDYVERSE/blob/main/Vic_Chan_GGPlot_Map.Rmd
 ¬----
 
 
