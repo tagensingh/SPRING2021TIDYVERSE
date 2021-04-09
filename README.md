@@ -160,7 +160,9 @@ Link
 
 # Michael I
 Initial Description
+Using the four types of mutating joins in Tidyverse (inner, left, right, full).
 Link
+https://github.com/mmippolito/cuny/blob/main/data607/tidyverse/ippolito-joins.rmd
 
 Revision/Addition Description
 Link
