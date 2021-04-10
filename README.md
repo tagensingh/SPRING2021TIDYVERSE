@@ -278,8 +278,9 @@ Link
 
 
 # Deepak S
-Initial Description
-Link
+Initial Description - Demonstrate efficient string manipulation functions from stringr.  
+Github - https://github.com/yathdeep/SPRING2021TIDYVERSE/Deepak-607-TidyVerse.Rmd  
+RPubs - https://rpubs.com/yathdeep/751620  
 
 Revision/Addition Description
 Link
