@@ -121,12 +121,13 @@ Link
 ¬----
 
 
-# Ethan H
-Initial Description
-Link
+# Ethan H 
 
-Revision/Addition Description
-Link
+Use recipes inside of workflows to build modular ML pipelines in tidymodels. 
+
+[rpubs link](https://rpubs.com/ebhtra/751473)
+[github link](https://github.com/acatlin/SPRING2021TIDYVERSE/blob/main/tidymodels_forpets.rmd)
+
 ¬----
 
 
