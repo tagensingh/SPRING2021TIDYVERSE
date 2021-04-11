@@ -21,6 +21,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #### The purpose this analysis is to categorized Disney movies according to their genre. Those movies gross income is also going to be analyzed.
 
+#### https://www.kaggle.com/rashikrahmanpritom/disney-movies-19372016-total-gross
+
 
 ```{r}
 library(tidyverse)
