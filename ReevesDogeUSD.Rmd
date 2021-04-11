@@ -1,0 +1,92 @@
+---
+title: "ReevesDOGE_USD"
+author: "Sam Reeves"
+date: "4/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+We're going to showcase some features of various packages from the Tidyverse!
+
+Here we have data concerning the DogeCoin/USD exchange rates according to Yahoo Finance from 2014 to roughly the present.  Using magrittr, dplyr, lubridate, and ggplot2, this should be a snap.  Let's get started.
+
+### Load the data.
+
+```{r}
+rates <- read.csv("https://raw.githubusercontent.com/TheWerefriend/data607/master/tidyverseAssignment/DOGE-USD.csv")
+
+colnames(rates)
+```
+
+### Check to see if close and adjusted close are the same.
+
+```{r}
+tests <- ifelse(rates$Close==rates$Adj.Close, "Identical", "Distinct")
+
+"Distinct" %in% tests
+```
+This result makes sense because there are no possible corporate actions like stock splits which can cause the closing value in a day to be adjusted.
+
+### Remove Adj.Close.
+
+```{r message=FALSE}
+library(magrittr)
+library(dplyr)
+
+rates <- rates %>%
+  select(!Adj.Close)
+
+colnames(rates)
+```
+
+From the dplyr package, we can use the ! operator to select the complement of a list of variables by name.
+
+### Convert the Date column to a date, and everything else to numeric values.
+
+```{r message=FALSE}
+library(lubridate)
+
+rates$Date <- ymd(rates$Date)
+```
+
+Now, all the other values are stored as factors... But, something strange happens when we try to convert them directly to numeric values:
+
+```{r}
+rates$Open[[1]]
+as.numeric(rates$Open[[1]])
+```
+Apparently, 0.000293 is the 190th factor level in the column!  Since there are some null values in the data (days where major changes happened with the DOGE network, I assume), we must throw throw those observations out.
+
+```{r warning=FALSE}
+rates[, c(2:6)] <- rates %>%
+  select(!Date) %>%
+  sapply(as.character) %>%
+  sapply(as.numeric)
+```
+```{r}
+rates <- na.omit(rates)
+anyNA(rates)
+```
+
+Transmute() works exactly the same as mutate(), except that it alters an existing variable instead of creating a new one.
+
+### Graph the prices and volume of Doge.
+
+```{r}
+library(ggplot2)
+
+a <- ggplot(rates, aes(x = rates$Date)) +
+  geom_line(aes(y = rates$Open), color = "steelblue") +
+  geom_line(aes(y = rates$High), color = "green") +
+  geom_line(aes(y = rates$Low), color = "red") +
+  geom_line(aes(y = rates$High), color = "purple")
+
+b <- ggplot(rates, aes(x = rates$Date)) +
+  geom_line(aes(y = rates$Volume), color = "black")
+
+a + labs(x = "Time", y = "Price in USD")
+b + labs(x = "Time", y = "Volume")
+```
+

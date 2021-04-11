@@ -348,4 +348,9 @@ Revision/Addition Description
 Link
 ¬----
 
+# Sam R
+Initial Description:
+Loading and manipulating OHLC data for DogeCoin using a few Tidyverse Packages.
 
+Revision/Additional:
+dplyr, magrittr, lubridate, ggplot2
