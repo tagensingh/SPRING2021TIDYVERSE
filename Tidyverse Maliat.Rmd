@@ -2,53 +2,69 @@
 title: "Tidyverse Recepie"
 author: "Maliat Islam"
 date: "4/8/2021"
-output: html_document
+output: 
+  prettydoc::html_pretty:
+    theme: leonids
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
 
-### For the implementation of Tidyverse, I have selected Forcats and ggplot libraries from this package. I have selected Disney movies gross income dataset from the 1937-2016 from Kaggle.
+## Tidyverse Recepie:
+### The Tidyverses is an collection of R packages.When Tidyverse is loaded it loads ggplot2, dplyr, tidyr, readr, purrr, tibble, stringr, and forcats.
+
+### Forcats and ggplot:
+
+#### For the implementation of Tidyverse, I have selected Forcats and ggplot libraries from this package.dplyr was used as well. I have selected Disney movies gross income dataset from the 1937-2016 from Kaggle.
+
+#### The purpose this analysis is to categorized Disney movies according to their genre. Those movies gross income is also going to be analyzed.
+
+
 ```{r}
 library(tidyverse)
+library(forcats)
+library(kableExtra)
 disney_movies_total_gross <- read.csv("https://raw.githubusercontent.com/maliat-hossain/FileProcessing/main/disney_movies_total_gross.csv")
-head(disney_movies_total_gross)
+head(disney_movies_total_gross)%>% kable() %>% 
+  kable_styling(bootstrap_options = "striped", font_size = 10) %>% 
+  scroll_box(height = "500px", width = "100%")
 ```
+
+#### Only necessary rows and columns have been selected using Tidyverse package dplyr. For this assignment I am focusing on the Disney movies released from 1937 to 1954.
 ```{r}
 DisneyMovies<-disney_movies_total_gross %>% dplyr::select(1)
 DisneyMovies1<-DisneyMovies[1:10,]
 
 ```
-
+#### The dataframe has been factorized for the purpose of implementing categories. The movies have been categorized as musical,adventure,comedy and drama.Forcats from tidyverse works really well to manipulate categorical variable.
 
 ```{r}
 DisneyMovies2<-factor(DisneyMovies1)
-view(DisneyMovies2)
+view(DisneyMovies2)%>% kable() %>% 
+  kable_styling(bootstrap_options = "striped", font_size = 10) %>% 
+  scroll_box(height = "500px", width = "100%")
 ```
 
 ```{r}
-library(forcats)
 DisneyMovies2<-fct_recode(DisneyMovies2 ,Musical="Snow White and the Seven Dwarfs" ,Adventure="Pinocchio",Musical="Fantasia",Adventure ="Song of the South",Drama="Cinderella",Adventure="20,000 Leagues Under the Sea",Drama="Lady and the Tramp",Drama="Sleeping Beauty",Comedy="101 Dalmatians",Comedy="The Absent Minded Professor")
 
 
 ```
 
-```{r}
-view(DisneyMovies2)
-```
 
+#### Total gross income column for these movies have been added.
 ```{r}
 DisneyMovies3<-disney_movies_total_gross %>% dplyr::select(1,5)
 DisneyMovies3<-DisneyMovies3[1:10,]
 ```
-
+#### Summary statistics for total gross revenue  from  Disney movies has been calculated.
 ```{r}
 
 summary(DisneyMovies3)
 ```
+#### case_when from dplyr is used for binning the gross income for movies.A variable named comparison_movies has been created which shows if the gross income of selected movie is "Below Average", "Around Average",or "Above Average". To determine the average information from the summary statistics have been used.
 
 ```{r}
 library(dplyr)
@@ -65,13 +81,19 @@ DisneyMovies4<-DisneyMovies3 %>%
 ```
 
 ```{r}
-view(DisneyMovies4)
+view(DisneyMovies4)%>% kable() %>% 
+  kable_styling(bootstrap_options = "striped", font_size = 10) %>% 
+  scroll_box(height = "500px", width = "100%")
 ```
 
-
+#### The outcome of selected movies' income has been visualized through the barplot. Each color represents different income status.
 ```{r}
 library(ggplot2)
 ggplot(data = DisneyMovies4, aes(x = movie_title, fill = comparison_movies)) +
-    geom_bar(position = "dodge")
+    geom_bar(position = "dodge")+coord_flip()
 ```
 
+
+### Conclusion
+
+#### The plot shows most of the Disney movies have earned above average from the year 1937 to 1954.
