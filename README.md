@@ -274,8 +274,8 @@ Link
 
 
 # Zachary S
-Initial Description
-Link
+Initial Description - Demonstrate how to use various tidyverse packages together
+Link: https://github.com/zachsfr/SPRING2021TIDYVERSE/blob/main/Zach-TidyVerse.Rmd
 
 Revision/Addition Description
 Link
