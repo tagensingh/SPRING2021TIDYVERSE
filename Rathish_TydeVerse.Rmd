@@ -1,0 +1,94 @@
+---
+title: "TidyVerse Assignment"
+author: "Rathish Sasidharan"
+date: "4/9/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Overview
+In this vignette we will explore various tidyverse packages like tidyr,dplyr,ggplot2
+
+Please find the link to the article.
+
+[A Handful Of Cities Are Driving 2016’s Rise In Murders](https://fivethirtyeight.com/features/a-handful-of-cities-are-driving-2016s-rise-in-murders/)
+
+## Prerequisites
+Load required packages
+
+```{r message=FALSE}
+library(ggplot2)
+library(dplyr)
+#library(tidyr)
+
+```
+
+
+### Loading data frame 
+Read the  data CSV file into data frames
+```{r}
+#Read the data from git
+murder2016 <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/murder_2016/murder_2016_prelim.csv")
+
+```
+
+## Subset columns
+
+select {dplyr} function is used to subset  data frame by columns
+```{r}
+murder2016_colsubset <- murder2016 %>% select(-c('source','as_of'))
+```
+
+
+## Rename columns
+
+rename {dplyr} function is used to rename data frame  columns
+```{r}
+murder2016_colsubset <- murder2016_colsubset %>% rename(murders_2015=X2015_murders,murders_2016=X2016_murders)
+```
+
+
+## Filter data
+filter {dplyr} is used to subset data frame by column value
+```{r}
+murder2016Fltr<- murder2016_colsubset %>%
+    filter(murders_2016 >50 & change >10)
+```
+
+
+## Sort the data
+arrange {dplyr} function is used to sort the data frame by column values 
+```{r}
+murder2016Fltr %>% arrange(murders_2016)
+murder2016Fltr %>% arrange(desc(murders_2016))
+
+```
+
+
+
+##  Modify columns
+mutate {dplyr} - this function is used to create/modify/delete columns
+```{r}
+murder2016Rt<- murder2016Fltr %>% mutate(increaseRt=change/murders_2016 *100)
+
+murder2016Rt
+
+```
+
+
+## Plot a graph
+
+bar plot for crime rates
+
+```{r}
+
+murder2016_5row <- head(murder2016Rt,5) 
+
+ggplot(data=murder2016_5row, aes(x=city, y=increaseRt,color=city,fill=city)) +  geom_bar(stat="identity") +labs(title='Crime Rate Across major cities 2016',x='City',y='Crime Rate increase') + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+geom_text(aes(label=increaseRt), position=position_dodge(width=0.9), vjust=-0.25)
+
+```
+
+
