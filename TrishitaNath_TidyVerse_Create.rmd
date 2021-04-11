@@ -1,0 +1,62 @@
+---
+title: "Data 607 TidyVerse CREATE assignment"
+author: "Trishita Nath"
+date: "4/10/2021"
+output: html_document
+---
+
+In this assignment, you’ll practice collaborating around a code project with GitHub.  You could consider our collective work as building out a book of examples on how to use TidyVerse functions.
+
+GitHub repository:  https://github.com/acatlin/SPRING2020TIDYVERSE
+
+[FiveThirtyEight.com datasets.](https://data.fivethirtyeight.com/)
+
+Kaggle datasets. 
+
+Your task here is to Create an Example.  Using one or more TidyVerse packages, and any dataset from fivethirtyeight.com or Kaggle, create a programming sample “vignette” that demonstrates how to use one or more of the capabilities of the selected TidyVerse package with your selected dataset. (25 points)
+
+## Libraries
+
+```{r echo=TRUE, eval=TRUE}
+library(tidyverse)
+```
+
+## Dataset
+
+I will be using the -- dataset
+
+I downloaded [this](https://projects.fivethirtyeight.com/soccer-api/club/spi_matches.csv) dataset from FiveThirtyEight.com datasets and uploaded the csv to [GitHub](https://raw.githubusercontent.com/nathtrish334/Data-607/main/spi_matches.csv)
+
+## Capabilities
+
+1. **read_csv**
+
+```{r echo=TRUE, eval=TRUE}
+spi_matches <- read_csv("https://raw.githubusercontent.com/nathtrish334/Data-607/main/spi_matches.csv")
+head(spi_matches)
+```
+
+2. **select**  
+Select and display only a set of columns
+```{r echo=TRUE, eval=TRUE}
+spi_matches_select <-select(spi_matches, c("season", "league", "team1", "team2", "prob1", "prob2", "probtie", "score1", "score2"))
+head(spi_matches_select)
+```
+
+3. **filter**  
+I am going to filter SPI ratings from 2020 season and onwards for UEFA Champions League
+```{r echo=TRUE, eval=TRUE}
+spi_matches_filter <-filter(spi_matches_select, season >= 2020 & league == "UEFA Champions League")
+head(spi_matches_filter)
+```
+4. **Summarise**  
+I am going to find the number of times each league appears in the dataset
+```{r echo=TRUE, eval=TRUE}
+#spi_matches_league <-select(spi_matches_select, c("league"))
+spi_matches_count <- spi_matches_select %>% count(league, name = "Count", sort = TRUE)
+head(spi_matches_count)
+```
+
+## Conclusion
+
+I have demonstrated four capabilities of the dplyr package; these have been: reading a csv, filtering, selecting and summarising.
