@@ -322,8 +322,9 @@ Link
 
 
 # Daniel S
-Initial Description
-Link
+Initial Description- show purrr shortcut functionality and intro into nesting data frames and map functions.
+Link 
+github - https://github.com/TheSaltyCrab/Tidyverse607/blob/main/DanielS_purrr_tidyproject.Rmd
 
 Revision/Addition Description
 Link
