@@ -1,0 +1,77 @@
+---
+title: "DATA607_tidy_purrr"
+author: "Daniel Sullivan"
+date: "4/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## PURRR by beginers for beginers
+
+The goal of this introduction is to review some of the different shortcuts that are implements within Purrr using the mtcars data.  
+
+
+start by loading tidyverse which contains the purr package
+```{r load libraries and data, message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+Then load in the mt cars data
+```{r}
+my_data <- mtcars
+```
+
+
+
+Purrr provides some very interesting additions to the apply functions. The modify and modify_if functions provide very easy to use functions that would be harder and longer to code with regular apply functions. additionally purrr provides shortcuts. This is seen below with the "~.+1" essentially I am using shortcuts to add one to each mpg total. with the tilda denoting the function to apply. 
+```{r}
+modify(my_data$mpg, ~.+1)
+```
+
+without the shortcuts the above lines would look like this which is much longer to right. 
+
+```{r}
+modify(my_data$mpg, function(x){1+x})
+```
+These shortcuts have multiple applications and can be used to do caulculations across rows as well. for example if i wanted to find mpg by weight.
+```{r}
+pmap(list(my_data$mpg, my_data$wt), ~..1/..2)
+```
+however purrr shines when you start to have to apply functions to lists of lists for example if we nest mtcars on whether the car has a v shaped engine or a straight engine we can use map functions where apply functions wouldnt work. 
+```{r}
+nest_data<-my_data%>%
+  group_by(vs)%>%
+  nest()
+```
+Thefirst line prints the data of cars that dont have a v shaped engine
+
+the second prints the data frame for those that do.
+```{r}
+print(nest_data$data[1])
+print(nest_data$data[2])
+```
+
+From there we can apply map functions to each nested data frame and get summary statistics for each. 
+```{r}
+Nest_mpg<- function(df){mean(df$mpg, na.rm = TRUE)}
+Nest_wt<- function(df){median(df$wt, na.rm = TRUE)}
+
+nest_data$avg_mpg<- nest_data$data%>%
+  map(Nest_mpg)
+
+nest_data$median_wt<- nest_data$data%>%
+  map(Nest_wt)
+
+```
+
+There are many other built in functions that are usfull in purrr that can be used to apply to lists of lists or lists of data frames. 
+
+
+
+
+
+
+
+
