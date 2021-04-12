@@ -137,13 +137,13 @@ Use recipes inside of workflows to build modular ML pipelines in tidymodels.
 
 
 # Brad H
-Initial Description
-Link
+Exploring the purrr package in R.
 
-Revision/Addition Description
-Link
+[Rpubs](https://rpubs.com/bharbans/753096)
+
+[github link](https://github.com/bharbans/SPRING2021TIDYVERSE/blob/main/brad_harbans_purr/brad_harbans_purr.rmd)
+
 ¬----
-
 
 # Eric H
 Initial Description: An Introduction to ggplot2 with special attention to the themes() element
