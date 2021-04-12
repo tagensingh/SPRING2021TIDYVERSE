@@ -1,8 +1,9 @@
 ---
-title: "brad_harbans_purr.rmd"
+title: "Exploring the purrr package"
 author: "Brad Harbans"
 date: "4/11/2021"
 output: html_document
+bibliography: references.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -13,3 +14,11 @@ library(tidyverse)
 ## Introduction
 
 I will explore the purr package which is a part of the tidverse packages. For an example data set I will be using the World Happiness Report 2021, this can be downloaded from [Kaggle](https://www.kaggle.com/ajaypalsinghlo/world-happiness-report-2021). 
+
+The purrr package "enhances R’s functional programming (FP) toolkit by providing a complete and consistent set of tools for working with functions and vectors. If you’ve never heard of FP before, the best place to start is the family of map() functions which allow you to replace many for loops with code that is both more succinct and easier to read"^[@functional_programming_tools_purrr].
+
+```{r import-csv}
+
+worldHappinessData <- read.csv(file = "")
+
+```

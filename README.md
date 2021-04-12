@@ -135,7 +135,7 @@ Use recipes inside of workflows to build modular ML pipelines in tidymodels.
 
 
 # Brad H
-Exploring the purr package in R.
+Exploring the purrr package in R.
 
 [Rpubs](https://rpubs.com/bharbans/752999)
 
