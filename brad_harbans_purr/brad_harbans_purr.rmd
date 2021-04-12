@@ -9,16 +9,63 @@ bibliography: references.bib
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(reactable)
 ```
 
 ## Introduction
 
-I will explore the purr package which is a part of the tidverse packages. For an example data set I will be using the World Happiness Report 2021, this can be downloaded from [Kaggle](https://www.kaggle.com/ajaypalsinghlo/world-happiness-report-2021). 
+I will explore the `purrr` package which is a part of the tidverse packages. For an example data set I will be using the World Happiness Report 2021, this can be downloaded from [Kaggle](https://www.kaggle.com/ajaypalsinghlo/world-happiness-report-2021). 
 
 The purrr package "enhances R’s functional programming (FP) toolkit by providing a complete and consistent set of tools for working with functions and vectors. If you’ve never heard of FP before, the best place to start is the family of map() functions which allow you to replace many for loops with code that is both more succinct and easier to read"^[@functional_programming_tools_purrr].
 
 ```{r import-csv}
 
-worldHappinessData <- read.csv(file = "")
+worldHappinessData <- read.csv(file ="https://raw.githubusercontent.com/bharbans/SPRING2021TIDYVERSE/main/brad_harbans_purr/world-happiness-report.csv")
 
 ```
+
+The `purrr` package is the tidyverse equivalent to `apply` functions. They allow for iterations over lists. This is generally preferred over loops in R as it tends to be more concise and easier to read. 
+
+### Map Functions vs Loops
+
+For this example I will filter the data to only show the information for the year 2019.
+```{r filter-to-2019}
+worldHappinessData2019 <- worldHappinessData %>% 
+  filter( year == '2019')
+```
+
+I will now write a loop to compute the average healthy life expectancy at birth. Please note , there are much better ways to complete this, I am only using this for an example. In fact the mean function is vectorized and the entire code below can be replaced by `mean(worldHappinessData2019$Healthy.life.expectancy.at.birth ,  na.rm = T )`. Also. dpylr's `summarise` function can obtain summary statistics rather easily. 
+```{r loop-average-life-expectancy}
+avgLifeExpectancy <- 0
+for( i in worldHappinessData2019$Healthy.life.expectancy.at.birth )
+{
+  if(! is.na(i) )
+  {
+    avgLifeExpectancy <- avgLifeExpectancy + i
+  }
+}
+
+avgLifeExpectancy <- avgLifeExpectancy/ length(worldHappinessData2019$Healthy.life.expectancy.at.birth)
+
+```
+
+I will now perform the same task using the `map` function. Note the pipeline, which is common in tidyverse operations. In this instance the `~` indicates a function and `.` takes the place of the argument of the function. Also note, this can be extended to multiple columns.
+```{r map-average-life-expectancy}
+worldHappinessData2019 %>% 
+  select( "Healthy.life.expectancy.at.birth", "Freedom.to.make.life.choices" ) %>% 
+  map(~mean(.,na.rm = TRUE))
+```
+Below I will use the `map` function a bit more. I will split the original data frame by year, and run a linear model on each year. I then apply the `summary` function the results from each model and then again use the `map` function to obtain the r.squared value for each year. 
+```{r map-function-lm-gdp-lifeexpec}
+worldHappinessData %>%  
+  split(.$year) %>% 
+  map(~lm( `Healthy.life.expectancy.at.birth` ~`Log.GDP.per.capita`  , data = .) ) %>% 
+  map(summary) %>% 
+  map_df("r.squared") %>% 
+  
+  reactable()
+```
+## Conclusion
+I have only explored the `map` function in the `purrr` package. These family of functions allows one to easily apply a function to a vector. It lends itself to easily allowing manipulation in a pipeline and can be used to simply complete iterative tasks. 
+
+
