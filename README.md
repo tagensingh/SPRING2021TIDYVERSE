@@ -80,8 +80,8 @@ Link
 
 
 # Carlisle F
-Initial Description
-Link
+Initial Description: Create custom color palettes for ggplot using hex numbers, RColorBrewer, and wesanderson. 
+Link: https://github.com/carlisleferguson/SPRING2021TIDYVERSE/blob/main/Carlisle_Ferguson_Tidyverse.Rmd
 
 Revision/Addition Description
 Link
