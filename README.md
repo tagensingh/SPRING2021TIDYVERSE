@@ -139,7 +139,7 @@ Exploring the purr package in R.
 
 [Rpubs](https://rpubs.com/bharbans/752999)
 
-[github link](https://https://github.com/bharbans/SPRING2021TIDYVERSE/brad_harbans_purr/brad_harbans_purr.rmd)
+[github link](https://github.com/bharbans/SPRING2021TIDYVERSE/blob/main/brad_harbans_purr/brad_harbans_purr.rmd)
 
 ¬----
 
