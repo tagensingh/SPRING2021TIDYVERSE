@@ -88,9 +88,9 @@ Link
 ¬----
 
 
-# Tyler F
-Initial Description
-Link
+# Tyler F 
+Initial Description: A vignette showing defining characteristics of tibbles versus data.frames.
+Link: https://github.com/curdferguson/SPRING2021TIDYVERSE/blob/tf/tf_tibbles.rmd
 
 Revision/Addition Description
 Link
