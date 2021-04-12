@@ -1,0 +1,131 @@
+---
+title: "Owens_607_tidyverse"
+author: "Henry Owens"
+date: "4/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+```
+
+# Lubridate, dplyr, ggplot and the tidyverse
+
+## This vignette uses Netflix data to explore some of the tidyverse functions
+
+
+
+### Handling date type data with Lubridate
+In this data set from Netflix, there is a column for date added. BUT it is stored as a string.  
+
+```{r load}
+
+url1 <- "https://raw.githubusercontent.com/hankowens/CUNY-MSDS/main/607/Data/netflix_titles.csv"
+netflix_df <- read.csv(url1)
+netflix_df$date_added[[1]]
+```
+
+With lubridate's `as_date` function maybe we can transform that into a date.  
+Well `as_date()` didn't work, but `mdy()` (also from `lubridate`) did the trick! Notice the original was in Month <day>, <year> (i.e., "August 14, 2020") format. 
+
+```{r dates}
+as_date(netflix_df$date_added[[1]])
+mdy(netflix_df$date_added[[1]])
+```
+### Formatting vectors and using dplyr 
+ 
+Next I will reformat the whole vector with `mdy()` and do some analysis with `lubridate` and `dplyr` functions. Using `dplyr`'s `group-by()` and `summarise()` we can look at what days had the most content added.  
+Piping operator `%>%`is super helpful for stringing and nesting functions together.
+
+```{r}
+netflix_df$date_added <- mdy(netflix_df$date_added)
+
+netflix_df %>% 
+  group_by(date_added) %>% 
+  summarise(count = n()) %>%  
+  arrange(desc(count)) #%>% head(20)
+
+```
+### floor_date
+This could be better: there are 1513 days when content was added to Netflix. The busiest days for new content seems to be the first of the month. But what if we wanted to look at just the year.  
+We can use `floor_date()` and `mutate()` to do just that.  
+
+```{r}
+netflix_df %>% 
+  mutate(year_added = floor_date(date_added, "year")) %>%  
+  group_by(year_added) %>% 
+  summarise(count = n()) %>%  
+  arrange(desc(count))
+```
+### Refining output with one more little function
+
+Now we can see the data grouped by year, but the output is kind of annoying: it lists the year followed by January 1. If we wrap the `floor_date()` function in `year()`, then we get the same data but looking much nicer: 
+
+```{r}
+
+netflix_df %>% 
+  mutate(year_added = year(floor_date(date_added, "year"))) %>%  
+  group_by(year_added) %>% 
+  summarise(count = n()) %>%  
+  arrange(desc(count))
+```
+### Weekdays with lubridate: wday()
+
+We can even use `lubridate` to show what day of the week is most common with `wday()` and `label=TRUE`:
+
+```{r}
+wday(netflix_df$date_added[[99]], label = TRUE)
+```
+
+Here is the data, plotted out over the course of the week. The busiest day for adding content is Friday.  
+
+```{r}
+p <- wday_df <- netflix_df %>% 
+  mutate(day_of_week_added = wday(date_added, label = TRUE)) %>%  
+  group_by(day_of_week_added) %>% 
+  filter(!is.na(day_of_week_added)) %>% 
+  summarise(count = n())  %>% 
+  ggplot(aes(x = day_of_week_added, y = count)) + geom_col() 
+
+p
+```
+
+### Multiple group_by (and also some stringr)
+
+Lastly, I want to look at what countries the content on Netflix comes from. Some of the country observations have more than one country, so for simplicity, I will use `str_replace_all` from `stringr` remove all but the first country. I am not sure what determines the ordering of the countries. 
+Notice you can stick the `floor_date` function inside the `group_by` instead of using another `mutate`.  
+Unsurprisingly, the United States, India and United Kingdom are represented at the top. 
+
+
+```{r, warning=FALSE}
+netflix_df$country <- str_replace_all(netflix_df$country, ",.*", "")
+netflix_df <- filter(netflix_df, country != "")
+netflix_df %>% 
+  group_by(year_added = year(floor_date(date_added, "year")), country) %>% 
+  summarise(count = n()) %>% 
+  arrange(desc(count))
+```
+
+### Using ggplot to visualize multiply group_by 
+
+Using `ggplot2` I plotted the count of year_added by country, leaving out the United States for clarity/scale and setting a minimum of 40 titles added.  
+
+```{r, warning=FALSE}
+p2 <- netflix_df %>% 
+  group_by(year_added = year(floor_date(date_added, "year")), country) %>% 
+  filter(country != "United States") %>% 
+  summarise(count = n()) %>% 
+  filter(count >= 40) %>% 
+  arrange(desc(count)) %>% 
+  ggplot(aes(x = year_added, y = count, colour = country)) + geom_line()
+
+p2
+```
+
+### Further questions
+
+
+There is plenty more information to examine in this dataset. For example only 57 movies/shows from the US that were added to Netflix in 2015 are still in this data. So there is a lot of turn over. 
