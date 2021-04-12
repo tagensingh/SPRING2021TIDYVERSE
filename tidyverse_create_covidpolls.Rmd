@@ -41,5 +41,6 @@ I want to make a quick plot of 'R' approval ratings of Trump and Biden.
 
 ```{r plotting}
 ggplot(polling_data_wide, aes(x=approve_R))+
-  geom_histogram()+ facet_grid(subject ~ .)
+  geom_histogram()+ facet_grid(subject ~ .)+
+  labs(title="Approval Ratings for Biden and Trump")
 ```
