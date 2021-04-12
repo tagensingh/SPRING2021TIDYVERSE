@@ -1,0 +1,15 @@
+---
+title: "brad_harbans_purr.rmd"
+author: "Brad Harbans"
+date: "4/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## Introduction
+
+I will explore the purr package which is a part of the tidverse packages. For an example data set I will be using the World Happiness Report 2021, this can be downloaded from [Kaggle](https://www.kaggle.com/ajaypalsinghlo/world-happiness-report-2021). 
