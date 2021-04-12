@@ -1,0 +1,111 @@
+---
+title: "tidyverse/tibble"
+author: "Tyler Frankenberg"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{tidyverse/tibble}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(tidyverse)
+
+```
+
+## Tibbles
+
+The tidyverse package `tibble` was introduced about a decade ago to compensate for some characteristics of base R `data.frames`. Now that R 4.0.0 has been released, many of the advantages of `tibbles` have been built directly into the base R `data.frame`, making its adoption by most R users as a separate method unnecessary.
+
+Tibbles, as defined by by Hadley Wickham in the package documentation, were a modern re-imagining of the `data.frame` structure.
+
+Wickham describes the "personality" of a `tibble` as "lazy" and "surly" because they:
+
+-   "do less": they have fewer default, coercing behaviors; most notably, they do not coerce character vectors to factors as `data.frame`s were known to do when `stringsAsFactors` was not specified
+
+-   "complain more": they raise more errors than `data.frames`, with the intention of helping coders catch problems in their data structures early in their process
+
+The third defining characteristic of a tibble is its `print()` method, which is designed to give a more compact display of especially large datasets.  This has also, as of this writing, been adopted by R 4.0.0.
+
+
+We'll examine this last feature of `tibble()` here with a comparison to `data.frame()`.
+
+## Sources for this vignette: 
+
+Wickham, Hadley and Grolemund, Garrett. *R for Data Science.* Accessed 9 April 2021 from: <https://r4ds.had.co.nz/tibbles.html>.
+
+Wickham, Hadley and Müller, Kirill. *tibble: part of the tidyverse 3.1.0* Accessed 11 April 2021 from: <https://tibble.tidyverse.org/>. 
+
+## Setup
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(jsonlite)
+
+```
+
+## Evaluating ibble and data.frame print structures
+
+### Read in data
+
+```{r csv_dataframe}
+
+url <- "https://raw.githubusercontent.com/curdferguson/SPRING2021TIDYVERSE/tf/winemag-data_first150k.csv"
+
+winemag <- read.delim(url, sep=",")
+
+
+```
+
+
+By default, `read.delim` has read in this .csv as a `data.frame`.  Let's now read it in a second time, but convert to `tibble` along the way using `as_tibble`, and print to examine some of its features.  You may notice, in particular:
+
+- the summary of row and column counts at the top left box, beginning with "A tibble"
+- data types for each column are specified beneath their column name
+- no columns of type <chr> have been converted to <fct>
+- the clean interface allows for scrolling through columns as well as rows for examination in-line.  Rows are grouped in pages of 10 and columns are grouped for most efficient layout per page based on the length of values.
+
+
+### Examine the defining features of the tibble
+
+
+```{r csv_tibble}
+
+winemag_tibble <- as_tibble(read.delim(url, sep=","))
+
+winemag_tibble
+
+```
+
+### Compare to the data.frame
+
+Now let's try printing the original `data.frame`, `winemag`.  You'll notice that each of the defining `tibble` `print` features are present:
+
+- the summary of row and column counts at the top left box, beginning with here with "description"
+- data types for each column are specified beneath their column name
+- no columns of type <chr> have been converted to <fct>
+- the clean interface allows for scrolling through columns as well as rows for examination in-line.  Rows are grouped in pages of 10 and columns are grouped for most efficient layout per page based on the length of values.
+
+
+```{r print_dataframe}
+
+winemag
+
+```
+
+## Conclusion
+
+This vignette should give `tibble` users assurance that with R 4.0.0 and subsequent releases, they can rest easy using the base R `data.frame` structure to maintain greater portability of their code, without sacrificing the features they know and rely upon.
+
+
+
+
