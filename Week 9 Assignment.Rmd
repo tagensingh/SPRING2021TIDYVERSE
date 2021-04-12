@@ -1,0 +1,85 @@
+---
+title: "NewYorkTimes"
+author: "Maliat Islam"
+date: "4/10/2021"
+output: 
+  prettydoc::html_pretty:
+    theme: cayman
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+## Creation of API KEY:
+### For this assignment firstly, I have visited https://developer.nytimes.com/ website to create an accoun with NYT devlopers website.I have also registered an app named Ranalysis to get my API key.After acquiring the key,I have used it too look for the news article on the new COVID 19 variants.I have worked with Mike  Kearney's nytimes package to get access to the Article Search API. jsonlite is also implemented to read in the json data and transform into in a R dataframe.
+
+```{r}
+library(jsonlite)
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(kableExtra)
+```
+
+```{r}
+devtools::install_github("mkearney/nytimes")
+```
+## Extracting Data:
+### Term, begin date , end date parameters were created to access data.The date is formatted in YYYYMMDD. Term refers to the COVID variant news artcle.
+
+```{r}
+term <- "COVID variant" # Need to use + to string together separate words
+begin_date <- str_replace_all(Sys.Date()-7, "-", "")
+end_date <- str_replace_all(Sys.Date(), "-", "")
+```
+### A value named baseurl is created. after that the query was pasted with parameters and my API key to fetch articles regarding new COVID 19 variant.
+```{r}
+baseurl <- paste0("http://api.nytimes.com/svc/search/v2/articlesearch.json?q=",term,
+                  "&begin_date=",begin_date,"&end_date=",end_date,
+                  "&facet_filter=true&api-key=GOnSpbnTPil1XnvQ7BolKxAhE2LVH4bQ",sep="")
+```
+
+```{r}
+initialQuery <- fromJSON(baseurl)
+maxPages <- round((initialQuery$response$meta$hits[1] / 10)-1) 
+```
+### A for loop is set to to loop through 0 to maximum pages. The maximum page has been set to 2.For each page a data frame is created by querying the baseurl and pasting on the page number.
+```{r}
+pages <- list()
+for(i in 0:2){
+  nytSearch <- fromJSON(paste0(baseurl, "&page=", i), flatten = TRUE) %>% data.frame() 
+  message("Retrieving page ", i)
+  pages[[i+1]] <- nytSearch 
+  Sys.sleep(1) 
+}
+```
+## Transformatin to R data frame:
+### After retrieving pages, all of them are combined into one dataframe.
+```{r}
+covidvariantdf <- rbind_pages(pages) 
+print(paste0("we have successfully scrapped ", dim(covidvariantdf)[1], " articles about new COVID variant"))
+```
+### Dataframe:
+```{r}
+view(covidvariantdf) %>% kable() %>% 
+  kable_styling(bootstrap_options = "striped", font_size = 10) %>% 
+  scroll_box(height = "500px", width = "100%")
+```
+
+### Barplot:
+### The barplot refelects new COVID variants are mostly discussed in news articles.
+```{r}
+covidvariantdf%>% 
+  group_by(response.docs.type_of_material) %>%
+  summarize(count=n()) %>%
+  mutate(percent = (count / sum(count))*100) %>%
+  ggplot() +
+  geom_bar(aes(y=percent, x=response.docs.type_of_material, fill=response.docs.type_of_material), stat = "identity") 
+```
+
+
+
+
