@@ -192,12 +192,13 @@ Link
 ¬----
 
 
-# Gabby M
-Initial Description
-Link
+# Gabriella (Gabby) M
+Initial Description: Using lubridate to create visualization of NJ Transit Northeast Corridor Train frequency by day of the week for January 2020. 
+Details on other lubridate functionalities; not all covered which allows for extention. 
+Link: https://github.com/gabbypaola/SPRING2021TIDYVERSE/blob/main/Tidyverse%20Project.Rmd
 
-Revision/Addition Description
-Link
+Revision/Addition Description:
+Link:
 ¬----
 
 
