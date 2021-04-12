@@ -244,8 +244,8 @@ Link
 
 
 # Henry O
-Initial Description
-Link
+Initial Description: I analyze data on Netflix content using handful of the tidyverse libraries including lubridate, dplyr, ggplot2,  and stringr.
+Link: https://github.com/hankowens/SPRING2021TIDYVERSE/blob/main/Owens_607_tidyverse_vignette.Rmd
 
 Revision/Addition Description
 Link
