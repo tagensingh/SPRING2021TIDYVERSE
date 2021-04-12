@@ -14,8 +14,10 @@ Link. https://github.com/acatlin/SPRING2021TIDYVERSE/blob/main/ggplot_forcats.rm
 
 
 # Esteban A
-Initial Description
-Link
+Initial Description:
+Demonstration on how to compute summary statistics across multiple columns in R using the **dplyr's across()** function.
+Link. 
+https://github.com/esteban-data-enthusiast/SPRING2021TIDYVERSE/blob/main/Esteban_Aramayo_Tidyverse_Across.Rmd
 
 Revision/Addition Description
 Link
