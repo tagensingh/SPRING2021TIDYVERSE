@@ -331,8 +331,8 @@ Link
 
 
 # Richard Z
-Initial Description
-Link
+Initial Description: Using pivot_longer to transform wide data sets into longer ones for easier storage. Then using merge() to combine dataframes after splitting them 
+Link: https://github.com/schoolkidrich/SPRING2021TIDYVERSE/blob/main/richardzheng_607_tidyverse.Rmd
 
 Revision/Addition Description
 Link

@@ -1,0 +1,51 @@
+---
+title: "data 607 TidyVerse"
+author: "Richard"
+date: "4/11/2021"
+output: html_document
+---
+
+# loading packages
+
+```{r}
+library(tidyverse)
+```
+
+# loading data
+
+```{r}
+url = 'https://raw.githubusercontent.com/fivethirtyeight/police-settlements/main/new_york_ny/final/new_york_edited.csv'
+
+claims = read.csv(url)
+```
+
+# Creating dates dataframe and deleting columns from claims
+
+```{r}
+dates = claims[c('claim_number','incident_date','filed_date','closed_date')]
+
+claims = claims[c('claim_number','plaintiff_name','summary_allegations','plaintiff_attorney','amount_awarded','location','city')]
+
+head(claims)
+```
+
+# Using pivot_longer() to reduce wideness of dates dataframe
+
+```{r}
+dates = dates %>%
+  pivot_longer(cols = c(incident_date,filed_date,closed_date), names_to = 'event', values_to = 'date' )
+
+head(dates)
+```
+
+# Using merge() to join claims and dates on claim_number
+
+```{r}
+
+claims%>%
+  merge(dates,on = 'claim_number')%>%
+  head()
+
+
+```
+
