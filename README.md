@@ -24,7 +24,7 @@ Link
 
 # Dmitriy B
 Initial Description
-Link
+Link https://raw.githubusercontent.com/dburtsev/CUNYR/master/vignette.Rmd
 
 Revision/Addition Description
 Link
