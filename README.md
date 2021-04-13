@@ -100,8 +100,8 @@ Link
 
 
 # Pedro G
-Initial Description
-Link
+Initial Description: vignettes showing the use of json_lite, httr, rCurl and ggplot to execute API calls, test for API error return calls and ggplot to plot 2019 batting averages by position and by player by position.
+Link: https://github.com/audiorunner13/SPRING2021TIDYVERSE
 
 Revision/Addition Description
 Link
