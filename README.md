@@ -150,8 +150,11 @@ Initial Description: An Introduction to ggplot2 with special attention to the th
 
 Link: https://github.com/acatlin/SPRING2021TIDYVERSE/blob/main/Eric_Hirsch_607_GGPLOT2.Rmd
 
-Revision/Addition Description
-Link
+
+Revision/Addition Description: An Extension of Maliat Islam's Vignettte about the FORCATS package.
+
+Link: https://github.com/acatlin/SPRING2021TIDYVERSE/blob/main/Tidyverse%20Maliat.Rmd
+
 ¬----
 
 
