@@ -139,6 +139,7 @@ Forcats has many ways to do this, with many options for choosing which categorie
 
 ```{r freq f}
 
+
 Disney6 <- disney_movies_total_gross %>%
     filter(genre!="") %>%
   mutate(genre = fct_lump(genre, n=5)) 
