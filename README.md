@@ -71,7 +71,7 @@ Link
 Initial Description: Using nest, unnest, map, and tidy functions to model and compare nested data
 Link
 
-Github - https://github.com/cassandra-coste/SPRING2021TIDYVERSE/blob/main/Cassandra_Coste_Tidyverse_Create.Rmd
+Github - https://github.com/cassandra-coste/SPRING2021TIDYVERSE/blob/main/Cassandra_C_Tidyverse_Create.Rmd
 
 Rpubs - https://rpubs.com/cassandra-coste/757157
 
