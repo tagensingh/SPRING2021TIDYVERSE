@@ -1,0 +1,130 @@
+---
+title: "Cassandra Coste TidyVerse"
+author: "Cassandra Coste"
+date: 4/11/2021
+output:  html_document
+
+---
+
+```{r setup, include = FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+
+# Using nest, unnest, map, and tidy functions to model and compare nested data
+
+### Nest and unnest - creating lists within dataframes and tidy data for modelling 
+
+This is an introduction to the nest and unnest functions found in the 'tidyr' package which is included in the tidyverse. 
+
+When you nest a data frame you create a  column that contains a list of data frames. Nesting works as a summarizing function since you get one row for each group defined by the non-nested columns.
+
+You can create nested data frames using tidyr::nest() or df %>% nest(x, y) specifies the columns to be nested. 
+
+When used in conjunction with the 'purr' and 'broom' packages you can apply operations to your lists of dataframes. 
+
+### Loading the libraries and the dataset
+
+
+For this example I will be using several tidyverse packages including tidyr, magrittr, broom, and purrr and we will load these first. 
+
+```{r, warning=F}
+
+library(tidyverse)
+library(magrittr)
+library(broom)
+library(purrr)
+
+```
+
+Next we load the csv file format data that will be used for our examples. 
+
+```{r load data}
+
+df <- as.data.frame(read.delim("https://raw.githubusercontent.com/cassandra-coste/CUNY607/main/data/world-happiness-report.csv", header = TRUE, stringsAsFactors = FALSE, sep = ",", fileEncoding = "UTF-8-BOM"))
+
+```
+
+### Setting up the model and demonstraing the tidy model format
+
+First we start with an example with a single country, in this case Afghanistan, to demonstrate what we will ultimately want to do to all countries in the dataset. We will do this by filtering the dataset for the country name Afghanistan. Then we will run a simple linear model with the outcome variable life expectancy and the predictor variable of year. Finally, we can use the tidy function from the broom package to view the linear regression information in a tidy model format. 
+
+
+```{r country}
+
+Afghanistan_by_year <- df %>% filter(Country.name == "Afghanistan")
+
+Afghanistan_lm <- lm(Healthy.life.expectancy.at.birth ~ year , Afghanistan_by_year)
+
+tidy(Afghanistan_lm)
+
+
+```
+
+### Created nested dataframes using nest function
+
+To prepare to run our analysis on all countries, we can create nested dataframes. The below code will indicated that we want to nest all columns besides the country name column so for each country, there will be a dataframe containing the other 10 variables for that country. 
+
+First, we use the map function to identify NAs and see that for our outcome variable of interest, healthy life expectancy, we have 55 na values, which we will drop for the purpose of allowing our model to run. 
+
+```{r nest}
+
+#identify na values that may be an issue 
+
+map(df, ~sum(is.na(.)))
+
+#drop na values in outcome variable column 
+
+by_country <- df %>% drop_na(Healthy.life.expectancy.at.birth)
+
+#nest the dataframe by country 
+
+by_country %<>%
+  nest(data = !Country.name)
+
+
+```
+
+### Run models on nested dataframes using map function 
+
+Now that we have nested dataframes for each country, we can use the purrr package and the map function to run the linear regression for each country. 
+
+Map in general allows for you to apply an operation to each item in a list. 
+
+If you had a list a <- list(1, 2, 3, 4)
+
+And used map to apply a operation of multiply by 2 using 
+
+map(a, ~ . x 2) it would return each item in the list multiplied by 2 and return 2, 4, 6, 8, as seen below.
+
+```{r}
+
+a <- list(1, 2, 3, 4)
+
+map(a, ~ . * 2)
+```
+
+Returning to the country's life expectancy example, we can use the map function to run simple linear regressions for each country and store it in a new column named model. 
+
+The general formula 
+map(.x = , .f =)
+
+```{r}
+# Use map to run the linear regression model for each country in the dataframe using the nested dataframes 
+
+by_country_model <- by_country %>% mutate(model = map(data, ~ lm(formula = Healthy.life.expectancy.at.birth ~ year, data = .x)))
+
+```
+
+### Tidy models using tidy and unnest functions
+
+To take this one step farther that tidy our model column which contains lists, we use map again to and the tidy function to turn those lists into nested dataframes in a new column called tidy and finally use unnest on our tidied column so that we now can easily see the coefficients for the model run for each country 
+
+```{r}
+# Here we run the same models as earlier but tidy and unnest the results 
+
+by_country_model <- by_country %>%
+  mutate(model = map(data, ~ lm(Healthy.life.expectancy.at.birth ~ year, data = .)), tidied = map(model, tidy))%>% unnest(tidied)
+
+
+```
