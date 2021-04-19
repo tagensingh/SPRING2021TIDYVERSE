@@ -229,9 +229,11 @@ Link
 # Daniel M
 Working with date/times using Lubridate.  
 RPubs: https://rpubs.com/dmoscoe/751068
+GitHub: https://github.com/acatlin/SPRING2021TIDYVERSE/blob/main/dmoscoe_lubridate.Rmd
 
 Revision/Addition Description
-Link
+Added examples to Matt Lucich's work on Stringr
+https://github.com/acatlin/SPRING2021TIDYVERSE/blob/main/stringr_matt_lucich.rmd
 ¬----
 
 
