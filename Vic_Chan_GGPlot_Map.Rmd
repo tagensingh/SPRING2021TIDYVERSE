@@ -1,0 +1,125 @@
+---
+title: "Plotting Maps using GGPlot"
+output:
+  html_document:
+    df_print: paged
+---
+
+# Introduction
+
+GGPlot is a very powerful data visualization tool and it also has the ability to visualize map data. The dataset that I will be using is the location for police killing found on (FiveThirtyEight)['https://github.com/fivethirtyeight/data/tree/master/police-killings']
+
+# Loading the Data
+```{r Loading the data}
+library(tidyverse)
+
+data_set = read.csv('https://raw.githubusercontent.com/fivethirtyeight/data/master/police-killings/police_killings.csv')
+
+data_set = data_set %>% select(latitude, longitude)
+```
+
+# Plotting on the map
+
+In order to plot the state lines we are going to need to load a data package. This is because the map does not know any information and is just a picture. This is the reason why we need to supplmental data to plot simple things as state borders.
+```{r}
+states = map_data('state')
+
+base_map = ggplot(data=states) + geom_polygon(aes(x=long, y=lat, group=group), color = 'white')
+```
+
+# Plotting Points on the map
+With the base map with the state borders we can now add points to the map from the dataset. We can see that there are some points that are off the map because those are points in Alaska and Hawaii. This is happening because the map data that initially used does not include Alaska and Hawaii. 
+```{r}
+base_map + geom_point(data=data_set, aes(x=longitude, y=latitude), color='red')
+```
+
+In order to get Alaska and Hawii we are going to be needing to download another map dataset that includes it as the map dataset default does not include the two states. For creating maps I would recommend plotly has a lot of function and is easier to use compared to looking for specific map data.
+```{r}
+library(plotly)
+
+fig <- data_set
+fig <- fig %>%
+  plot_ly(
+    lat = ~latitude,
+    lon = ~longitude,
+    marker = list(color = "fuchsia"),
+    type = 'scattermapbox'
+    ) 
+fig <- fig %>%
+  layout(
+    mapbox = list(
+      style = 'open-street-map',
+      zoom =2.5,
+      center = list(lon = -88, lat = 34))) 
+
+fig
+```
+
+# Conclusion
+
+Creating maps is a essential skill when working with data. GGPlot does have the capability of creating and customizing maps, but can be very difficult to work with. I would recommend everyone to use plotly for their mapping needs as it easy, has lots of function, and creates a interactive map.
+
+# Extension (Michael)
+
+The Stanford Geospatial Center collects data about mass shootings by geographic location. I wanted to extend Vic's plotly demo to see how closely mass shootings match up with police shootings, location-wise. Here is just the mass shootings map:
+
+```{r ext1}
+
+#load mass shootings data
+msa_data = read.csv("https://raw.githubusercontent.com/mmippolito/cuny/main/data607/tidyverse/Stanford_MSA_Database.csv")
+fig2 <- msa_data %>%
+  select(Latitude, Longitude) %>%
+  rename(latitude = Latitude, longitude = Longitude) %>%
+  mutate(shooting = 'mass')
+
+fig2 <- fig2 %>%
+  plot_ly(
+    lat = ~latitude,
+    lon = ~longitude,
+    marker = list(color = "blue"),
+    type = 'scattermapbox'
+    ) 
+fig2 <- fig2 %>%
+  layout(
+    mapbox = list(
+      style = 'open-street-map',
+      zoom =2.5,
+      center = list(lon = -88, lat = 34))) 
+
+fig2
+
+```
+
+Now overlaying the police shooting data using two different colours:
+
+```{r ext2}
+
+#merge data sets
+fig1 <- data_set %>%
+  select(latitude, longitude) %>%
+  mutate(shooting = 'police shooting')
+fig2 <- msa_data %>%
+  select(Latitude, Longitude) %>%
+  rename(latitude = Latitude, longitude = Longitude) %>%
+  mutate(shooting = 'mass shooting')
+fig <- fig1 %>% rbind(fig2)
+
+fig <- fig %>%
+  plot_ly(
+    lat = ~latitude,
+    lon = ~longitude,
+    color = ~shooting,
+    type = 'scattermapbox'
+  )
+fig <- fig %>%
+  layout(
+    mapbox = list(
+      style = 'open-street-map',
+      zoom =2.5,
+      center = list(lon = -88, lat = 34)
+    )
+  )
+
+fig
+
+```

@@ -1,0 +1,151 @@
+---
+title: 'Tidyverse: using stringr, dplyr, and tibble to clean up catch phrases'
+author: "Matthew Lucich"
+date: "4/2/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## Cleaning up catch phrases from classic movies
+
+Source: https://www.kaggle.com/thomaskonstantin/150-famous-movie-catchphrases-with-context?select=Catchphrase.csv 
+
+Chose a text only dataset in order to demonstrate efficient string manipulating functions from stringr. Additionally, most examples contain data stored in a tibble and data management functions from dplyr.
+
+```{r, warning=FALSE}
+
+# Load data as tibble dataframe (directly from Github)
+catch_phrases <- read_csv("https://gist.githubusercontent.com/mattlucich/afc4b9c362e303c1f6ba8880877f0b60/raw/a08a96361705b00c4ee8f4ec0b3d324f864ae419/catchphrase.csv") %>%
+                  rename(catchphrase = Catchphrase, 
+                         movie_name = `Movie Name`,
+                         context = Context)
+
+```
+
+
+## 1: How do I remove repeated extraneous characters from my data?
+
+**Answer**: Use stringr's str_replace_all() function which replaces all matches of the character/pattern of interest.
+
+```{r}
+
+# Remove extraneous line breaks
+catch_phrases$catchphrase <- catch_phrases$catchphrase %>% str_replace_all("\n" , "")
+
+head(catch_phrases)
+
+```
+
+
+## 2: How do I convert uppercase text to title case?
+
+**Answer**: Use stringr's str_to_title() to convert text to title case, then use dplyr's mutate() to perform the transformation on each row of the dataframe, replacing the previous value.
+
+```{r}
+
+# Use stringr and dplyr to convert all of the movie names to capital case
+catch_phrases <- catch_phrases %>% mutate(movie_name = str_to_title(movie_name))
+
+head(catch_phrases)
+
+```
+ 
+ 
+## 3: How do I filter for rows in a tibble containing certain characters/patterns?
+
+**Answer**: Use stringr's str_detect() to detect the character/pattern of interest, then use dplyr's filter() to return only rows where the str_detect() condition is true.
+
+```{r}
+
+# Filter for the high energy quotes (i.e. ones with exclamation points)
+exclamation_points <- catch_phrases %>% filter(str_detect(catchphrase, '!') )
+
+# Percent of quotes that have exclamation points
+dim(exclamation_points)[1] / dim(catch_phrases)[1]
+
+```
+
+
+## 4: How do I count how many matches a string has with a particular character/pattern (and filter out tibble rows with zero matches)?
+
+**Answer**: Use stringr's str_count() to count the number of matches for the character/pattern of interest. Use dplyr's mutate() to perform the transformation on each row of the dataframe, replacing the previous value. Then, use dplyr's filter to only return rows with at least one match. Use dplyr's select() to return only the columns of interest and arrange() to sort the data in descending order by match count.
+
+```{r}
+
+# Filter for the high energy quotes (i.e. ones with exclamation points)
+catch_phrases %>% mutate(exc_count = str_count(catchphrase, '!')) %>% 
+                  filter(exc_count > 0) %>% 
+                  select(catchphrase, exc_count) %>%
+                  arrange(desc(exc_count))
+
+```
+
+
+## 5: How do I concatenate columns?
+
+**Answer**: Use stringr's str_glue_data() function to combine multiple columns, separated by strings before, between or after the columns. The below example selects all columns, but returns only movie_name and catchphrase, separated by a dash.
+
+```{r}
+
+# Combine into one string
+cp_glue <- catch_phrases %>% str_glue_data("{rownames(.)} {movie_name} - {catchphrase}")
+
+head(cp_glue)
+
+```
+
+
+## 6: How do I order a vector alphabetically?
+
+**Answer**: Use dplyr's pull() function to extract the catchphrase column from the catch_phrases tibble, converting it into a vector. Use stringr's str_sort() function to order the vector alphabetically.
+
+```{r}
+
+# Convert catchphrase column to vector
+cp_vec <- catch_phrases %>% pull(catchphrase)
+
+# Sort catchphrase in alphabetical order by the letter beginning the phrase
+cp_sort <- str_sort(cp_vec)
+
+head(cp_sort)
+
+```
+
+### Extension by Daniel Moscoe
+
+## 7: How do I sort a vector by length?
+
+**Answer**: Use dplyr's mutate() function together with str_length() to compute the length of each catchphrase. Use dplyr's arrange() function to sort the table by the new column of lengths.
+
+```{r}
+cp_by_len <- catch_phrases %>%
+  mutate("length" = str_length(catchphrase)) %>%
+  arrange(length)
+
+head(cp_by_len)
+```
+
+## 8: How do I wrap a string to create paragraphs with a maximum line width?
+
+**Answer**: Use stringr's str_wrap() function to insert line breaks along a string. Line breaks always occur between words so that no line exceeds the given width.
+
+```{r}
+cp_wrap <- catch_phrases %>%
+  mutate("wrapped" = str_wrap(catchphrase, width = 30))
+head(cp_wrap$wrapped)
+```
+
+## 9: How can I extract text that matches a regexp?
+
+**Answer**: Use str_extract with the regexp you wish to match. For this data, we can use this strategy (with moderate success) to extract the name of the character who delivers the catchphrase.
+
+```{r}
+cp_char <- catch_phrases %>%
+  mutate("character" = str_extract(catch_phrases$context, "^[^,]+(?=[,\\'])"))
+head(cp_char)
+```
+

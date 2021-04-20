@@ -1,0 +1,62 @@
+---
+title: "Tidyverse - Dplyr"
+author: "Joshua Hummell"
+date: "4/8/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Tidyverse Vignette
+```{r message=FALSE}
+library(dplyr)
+```
+
+#### Hands down my favorite R package in Tidyverse is Dplyr
+Dplyr allows for easy data manipulation and, therefore, is highly useful for everyday work!  
+
+
+
+```{r}
+murders <- read.csv('https://raw.githubusercontent.com/fivethirtyeight/data/master/murder_2016/murder_2015_final.csv')
+```
+
+
+Select data columns with ease
+```{r}
+murders %>% select(state)
+```
+easily filter data
+```{r}
+murders %>% 
+  filter(city == 'Baltimore')
+```
+
+Easily Aggregate Date
+
+```{r}
+state <- murders %>% select(state, change) %>% group_by(state) %>% summarise(state_totals = sum(change)) %>% arrange(desc(state_totals))
+state
+```
+  
+and even join data
+ 
+```{r}
+states_pop <- read.csv('https://raw.githubusercontent.com/jhumms/DATA607/main/state_populations.csv')
+colnames(states_pop) <- tolower(colnames(states_pop))
+
+murders_state <- left_join(state, states_pop, by='state')
+
+murders_state
+```
+and, if that weren't enough, you can even make aggregations across columns very easily!
+
+```{r}
+murders_state$population <- as.numeric(murders_state$population)
+
+murders_state %>% mutate(murder_rate_by_pop = (state_totals / population) *100) %>% arrange(desc(murder_rate_by_pop))
+```
+ 
+ 
