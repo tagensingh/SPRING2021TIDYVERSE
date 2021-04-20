@@ -58,8 +58,8 @@ https://github.com/mmippolito/SPRING2021TIDYVERSE/blob/main/Vic_Chan_GGPlot_Map.
 Initial: How to use Lubridate and other Tidyverse libraries to calculate days elapsed during a polling cycle as well as use of ggplot to create faceted boxs-plot that intgrate four variables. Possibilities for Extend are included in # comments. 
 https://github.com/sconnin/SPRING2021TIDYVERSE/blob/main/Connin_607_tidyverse.Rmd
 
-Revision/Addition Description
-Link
+Revision/Addition Description: Extended Eric's ggplot vignette to include grid-layout of two plots using cowplot and the grob function. Also added subtitles to the plots. 
+Link: https://github.com/acatlin/SPRING2021TIDYVERSE/blob/main/Eric_Hirsch_607_GGPLOT2.Rmd
 ¬----
 
 
