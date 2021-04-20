@@ -73,8 +73,12 @@ Link
 
 
 # Cassandra C
-Initial Description
+Initial Description: Using nest, unnest, map, and tidy functions to model and compare nested data
 Link
+
+Github - https://github.com/cassandra-coste/SPRING2021TIDYVERSE/blob/main/Cassandra_C_Tidyverse_Create.Rmd
+
+Rpubs - https://rpubs.com/cassandra-coste/757157
 
 Revision/Addition Description
 Link
