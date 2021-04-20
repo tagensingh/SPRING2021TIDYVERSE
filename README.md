@@ -19,8 +19,8 @@ Demonstration on how to compute summary statistics across multiple columns in R 
 Link. 
 https://github.com/esteban-data-enthusiast/SPRING2021TIDYVERSE/blob/main/Esteban_Aramayo_Tidyverse_Across.Rmd
 
-Revision/Addition Description
-Link
+Revision/Addition Description: Claire M added a number of ggplot plots, including geom_label(), geom_text(), geom_count(), and more traditional scatterplot and histogram. 
+Link: https://github.com/acatlin/SPRING2021TIDYVERSE/blob/main/Esteban_Aramayo_Tidyverse_Across.Rmd
 ¬----
 
 
