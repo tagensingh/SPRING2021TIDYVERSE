@@ -137,6 +137,11 @@ Use recipes inside of workflows to build modular ML pipelines in tidymodels.
 [rpubs link](https://rpubs.com/ebhtra/751473)
 [github link](https://github.com/acatlin/SPRING2021TIDYVERSE/blob/main/tidymodels_forpets.rmd)
 
+Revision/Addition Description:  Extend Henry Owens' Netflix analysis
+
+Forecast future monthly Netflix releases using `timetk` to engineer features and the Prophet-XGBoost hybrid model from `modeltime` for ML.
+
+[github link](https://github.com/hankowens/SPRING2021TIDYVERSE/blob/main/Owens_607_tidyverse_vignette.Rmd)
 ¬----
 
 
