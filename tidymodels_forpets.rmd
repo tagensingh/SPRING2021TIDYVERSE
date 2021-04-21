@@ -1,0 +1,296 @@
+---
+title: "tidymodels for pets"
+author: "EH"
+date: "4/3/2021"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(glue)
+library(readr)
+library(tidyverse)
+```
+
+Data Source:  PetFinder competition on Kaggle, 2019 
+'https://www.kaggle.com/c/petfinder-adoption-prediction/data'
+
+### Kaggle ran a competition in 2019 aiming to help PetFinder rescue shelters in Malaysia.  
+PetFinder wanted to predict which of its incoming, rescued cats and dogs would be most likely to get adopted fastest.  This could help them forecast occupancy at their shelters, and also could help them learn features that were "working" in the sense of speeding up adoption rates. I'm not going to look at these "craftable" features to speed up adoption, which would involve deep learning on the textual descriptions of the pets and their photos.  I'll just focus here on the static features of the pets, such as fur length and breed, although some of these features, such as vaccination status, neutering category, and adoption fees could be something PetFinder wants to know if it's worth changing for certain animals, i.e. if the speedup in adoption time was worth the associated costs.
+
+```{r}
+pets <- read_csv('https://raw.githubusercontent.com/ebhtra/msds-607/main/pets.csv')
+head(pets)
+```
+
+
+### Data Fields  
+
+ - PetID - Unique hash ID of pet profile
+ - AdoptionSpeed - Categorical speed of adoption. Lower is faster. This is the value to predict.
+ - Type - Type of animal (1 = Dog, 2 = Cat)
+ - Name - Name of pet (NA if not named)
+ - Age - Age of pet when listed, in months
+ - Breed1 - Primary breed of pet
+ - Breed2 - Secondary breed of pet, if pet is of mixed breed
+ - Gender - Gender of pet (1 = Male, 2 = Female, 3 = Mixed, if profile represents group of pets)
+ - Color1 - Color 1 of pet
+ - Color2 - Color 2 of pet
+ - Color3 - Color 3 of pet
+ - MaturitySize - Size at maturity (1 = Small, 2 = Medium, 3 = Large, 4 = Extra Large, 0 = Not Specified)
+ - FurLength - Fur length (1 = Short, 2 = Medium, 3 = Long, 0 = Not Specified)
+ - Vaccinated - Pet has been vaccinated (1 = Yes, 2 = No, 3 = Not Sure)
+ - Dewormed - Pet has been dewormed (1 = Yes, 2 = No, 3 = Not Sure)
+ - Sterilized - Pet has been spayed / neutered (1 = Yes, 2 = No, 3 = Not Sure)
+ - Health - Health Condition (1 = Healthy, 2 = Minor Injury, 3 = Serious Injury, 0 = Not Specified)
+ - Quantity - Number of pets represented in profile
+ - Fee - Adoption fee (0 = Free)
+ - State - State location in Malaysia
+ - RescuerID - Unique hash ID of rescuer
+ - VideoAmt - Total uploaded videos for this pet
+ - PhotoAmt - Total uploaded photos for this pet
+ - Description - Profile write-up for this pet. The primary language used is English, with some in Malay or Chinese.
+
+The response variable here is the AdoptionSpeed, an ordinal, categorical number repesenting how long it took for the pet to get adopted.
+
+#### AdoptionSpeed:  
+
+0 - Pet was adopted on the same day as it was listed.
+1 - Pet was adopted between 1 and 7 days (1st week) after being listed.
+2 - Pet was adopted between 8 and 30 days (1st month) after being listed.
+3 - Pet was adopted between 31 and 90 days (2nd & 3rd month) after being listed.
+4 - No adoption after 100 days of being listed. (There are no pets in this dataset that waited between 90 and 100 days).
+
+About half of the speeds were 0-2, and half were 3-4, so I'll attempt to predict whether a pet will be adopted within a month or not, using the above provided feature list.  The actual Kaggle competition used text sentiment analysis modeled by analyzing the last category, "Description", but here let's just turn the description into a feature, like how many characters long it is, e.g. 
+
+Most of those features are categorical, as opposed to numerical or text, and although many have a natural ordering, like "FurLength" (1 = Short, 2 = Medium, 3 = Long, 0 = Not Specified), it will be more useful to keep "Not Specified" as a category and just abandon the order of the other 3 categories, rather than treating them as ordered and not being able to use the "Not Specified" ones.  
+
+```{r}
+# convert 'Description' to 'TextLength' and 'Name' to binary 'Named' (yes/no)
+numericals <- c('Age', 'Quantity', 'Fee', 'VideoAmt', 'PhotoAmt', 'TextLength')
+# convert 'AdoptionSpeed' into binary 'AdoptedFast' (yes/no)
+target <- 'AdoptedFast'
+categoricals <- c('Type', 'Breed1', 'Breed2', 'Gender', 'Color1', 'Color2',
+                  'Color3', 'MaturitySize', 'FurLength', 'Vaccinated', 'Named',
+                  'Dewormed', 'Sterilized', 'Health', 'State')
+ids <- 'PetID'
+```
+
+First we need to create the 3 promised features-- one indicating whether the pet is named or not, one indicating the length of the text description, and one converting the target variable to indicate whether the pet was adopted in less than a month or more. 
+
+```{r}
+pets$Name[1:30]
+```
+
+Besides the NA's, there are some "No Name" and "No Name Yet" listings, as well as some descriptive statements instead of names ("2 Mths Old Cute Kitties", "Lost Dog").  Maybe the best thing to do is just take care of the NA's and "No Name" type listings.
+
+```{r}
+pets <- pets %>%
+  mutate(AdoptedFast = ifelse(AdoptionSpeed < 3, 'yes', 'no')) %>%
+  mutate(TextLength = str_length(Description)) %>%
+  mutate(Named = ifelse(is.na(Name), 'no', 
+                        ifelse(str_starts(Name, "No "), 'no', 'yes'))) %>%
+  select(-c('AdoptionSpeed', 'Description', 'Name', 'RescuerID'))
+# removed rescuer ID in order to train on 90% fewer features
+head(pets[rev(names(pets))])
+```
+Make all the categorical features into factors 
+
+```{r}
+pets[, c(categoricals, target)] <- lapply(pets[, c(categoricals, target)], factor)
+```
+
+### Tidymodels is/are a group of packages within the tidyverse, useful for ML modeling tasks. 
+
+```{r}
+library(tidymodels)
+library(skimr)
+skim(pets, all_of(c(categoricals, target)))
+```
+
+Before scaling the numeric features, the data should be split into training and testing groups.  That way, when models are trained, they won't be using any information from the test data.  
+
+```{r}
+# set the random seed, for reproducibility, and split the data 80/20.
+set.seed(607)
+
+traintest <- initial_split(pets, prop = .80)
+train_data <- training(traintest)
+test_data  <- testing(traintest)
+```
+
+Now the numerical data can be scaled, using a recipe.  Some models, like decision trees, don't need the inputs to be scaled, but most others perform better with scaled inputs.  In the same recipe, you can one-hot encode the categorical variables, so that models can train on 1's and 0's, as they like to do.  This turns one column of many values into many columns of binary values.  Since the breed features, for example, include over 300 breeds, which now become over 300 columns, it's possible some of them will only occur once in the training set, or not at all, and only once in the testing set.  This will make for bad predictions and erroneous learning by the model.  So `step_zv` (for "zero-variance") will remove these problematic features.  Also you can set the petID column to have an identifier role, where it will be ignored by the model, but will be there to help with bookkeeping, if needed. 
+
+```{r}
+rec <- recipe(AdoptedFast ~ ., data = train_data) %>%
+  update_role(all_of(ids), new_role = "ID") %>%
+  step_normalize(all_of(numericals)) %>%
+  step_dummy(all_of(categoricals)) %>%
+  step_zv(all_predictors()) 
+# prep() fits the scaler to the training data
+scaler <- prep(rec, training = train_data)
+# and bake() transforms all data using the statistics learned by prep()
+scaled_train <- bake(scaler, train_data)
+scaled_test <- bake(scaler, test_data)
+```
+
+Now the scaled data can be used to train models.  Or at least that shows conceptually how the scaler will be fit to and transform the data. But instead of exiting the pipeline so soon, recipes can fit inside of a larger pipeline called a `workflow()`, which manages all the scaling steps as part of a model parameter fitting and prediction process.  It just needs the data, the recipe, and a model.
+
+One natural model choice to start with might be a logistic regression classifier, such as `logistic_reg()` from the `parsnip` package. 
+
+```{r}
+lr_mod <- logistic_reg() %>%
+  set_engine('glm') # barebones log_reg, without regularization penalties
+
+pet_workflow <- workflow() %>%
+  add_model(lr_mod) %>%
+  add_recipe(rec)
+
+pet_workflow
+```
+
+Fit the model to the training set.  
+
+```{r}
+pet_fit <- pet_workflow %>%
+  fit(data = train_data)
+pet_fit %>% 
+  pull_workflow_fit() %>% 
+  tidy()
+```
+We can set the logistic regression model to output its predictions in probabilities, rather than just binary 'yes'/'no' predictions, and that way we can look at the area under the ROC as a means of evaluating the model over all choices of threshold, rather than just .50.
+
+```{r}
+pet_pred <- 
+  predict(pet_fit, test_data, type = "prob") %>% 
+  bind_cols(test_data %>% select(AdoptedFast))
+  # bound the true values for visual inspection of predictions
+pet_pred
+```
+
+```{r}
+pet_pred %>% 
+  roc_curve(truth = AdoptedFast, .pred_no) %>% 
+  autoplot()
+```
+
+```{r}
+pet_pred %>% 
+  roc_auc(truth = AdoptedFast, .pred_no)
+```
+
+Not great area under the curve (.658), but better than guessing (0.5).  Probably adding some regularization penalties to the parameters would help.  For this, you can use the same model, but run it with an ElasticNet engine ('glmnet' instead of the 'glm' used above).  ElasticNet allows you to specify what proportion of L2/L1 penalties you want to apply to the weights learned by the model.  L2 penalizes big weights more heavily, while L1 penalizes small weights more, relatively speaking.  
+
+Because we built this into a modular `workflow()`, we can just change the model part of things and run the pipeline easily. 
+
+```{r}
+library(glmnet)
+# instantiate a model with 20% L1 and 80% L2, and using a penalty of 0.01 (somewhat arbitrarily)
+lr_elastic <- logistic_reg(penalty = 0.01, mixture = 0.2) %>%
+  set_engine('glmnet')
+
+pet_workflow <- pet_workflow %>% 
+  update_model(lr_elastic)
+pet_workflow
+```
+```{r}
+pet_fit <- pet_workflow %>%
+  fit(data = train_data)
+pet_fit %>% 
+  pull_workflow_fit() %>% 
+  tidy()
+```
+The learned weights (`estimate` feature above) are smaller than in the unpenalized model, but the intercept is larger. This model will overfit less, since it has smaller parameters, but will be more biased.  Let's compare how it predicts, versus the first one.  
+
+```{r}
+pet_pred <- 
+  predict(pet_fit, test_data, type = "prob") %>% 
+  bind_cols(test_data %>% select(AdoptedFast))
+pet_pred
+```
+```{r}
+pet_pred %>% 
+  roc_curve(truth = AdoptedFast, .pred_no) %>% 
+  autoplot()
+```
+```{r}
+pet_pred %>% 
+  roc_auc(truth = AdoptedFast, .pred_no)
+```
+That's barely any better than the first model.  One other ML model that usually gets thrown at this type of data and task is a random forest.  It handles the categorical data well, and deals with overfitting by not letting the model rely too much on any one feature, which probably won't get used in most of the trees the model builds.  Again we can just substitute it into the workflow and give it a whirl.  
+
+```{r}
+library(randomForest)
+rf_mod <- rand_forest(mode = 'classification', mtry = 20, 
+                      min_n = 3, trees = 100) %>%
+  set_engine('randomForest')
+
+pet_workflow <- pet_workflow %>% 
+  update_model(rf_mod)
+pet_workflow
+```
+
+```{r}
+pet_fit <- pet_workflow %>%
+  fit(data = train_data)
+pet_pred <- 
+  predict(pet_fit, test_data, type = "prob") %>% 
+  bind_cols(test_data %>% select(AdoptedFast))
+pet_pred
+```
+```{r}
+pet_pred %>% 
+  roc_curve(truth = AdoptedFast, .pred_no) %>% 
+  autoplot()
+```
+That performs better.  The logistic regression models had an ROC-AUC score of about .66, so let's see how much better the random forest did.  
+
+```{r}
+pet_pred %>% 
+  roc_auc(truth = AdoptedFast, .pred_no)
+```
+Better, but still not great.  The proper thing to do now is to find better hyperparameters for the random forest model.  I just guessed at `mtry = 20`, which specifies the number of features to randomly choose when finding the best feature for splitting the tree into 2 branches, and I also chose the model to stop splitting a branch when the number of examples on its end is below 3 (`min_n = 3`).  And to make the model train faster, I only chose `trees = 100`, but there would be better predictive accuracy if that were increased to 500 or 1000.  
+
+```{r}
+rf2_mod <- rand_forest(mode = 'classification', mtry = 30, 
+                      min_n = 4, trees = 200) %>%
+  set_engine('randomForest')
+
+pet_workflow <- pet_workflow %>% 
+  update_model(rf2_mod)
+
+pet_fit <- pet_workflow %>%
+  fit(data = train_data)
+pet_pred <- 
+  predict(pet_fit, test_data, type = "prob") %>% 
+  bind_cols(test_data %>% select(AdoptedFast))
+pet_pred
+```
+The notable thing about those predictions is they're more "certain" of themselves, i.e. they are further away from 0.50, in general.  
+
+
+```{r}
+pet_pred %>% 
+  roc_curve(truth = AdoptedFast, .pred_no) %>% 
+  autoplot()
+```
+```{r}
+pet_pred %>% 
+  roc_auc(truth = AdoptedFast, .pred_no)
+```
+### Proper next steps:  
+
+ - Use cross-fold validation with parameter grid search to find the best combination of hyperparameters, if the goal is to squeeze out better predictions from the model.
+ 
+ - Try different ML models  
+ 
+ - Use NLP to analyze the text descriptions of the pets, rather than just using length of text as a (pretty useless) feature.  
+ 
+ - Use the photos of the pets (not included here, but available on Kaggle) as extra information for a neural network.  
+ 
+[Link to the data on Kaggle](https://www.kaggle.com/c/petfinder-adoption-prediction/data)  
+[A blog by Paul Sharkey that helped me](https://pgshky.rbind.io/post/machine-learning-tidymodels/)  
+[A helpful tidymodels.org page](https://www.tidymodels.org/start/recipes/)  
+
