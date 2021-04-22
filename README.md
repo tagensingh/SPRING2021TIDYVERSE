@@ -169,7 +169,9 @@ Link
 
 # Maliat I
 Initial Description
-Link
+Link 
+https://rpubs.com/maliatislam/752890
+https://github.com/maliat-hossain/SPRING2021TIDYVERSE/commit/2faf0b0c42a2f57399a31b731823d799ad488aed
 
 Revision/Addition Description
 Link
