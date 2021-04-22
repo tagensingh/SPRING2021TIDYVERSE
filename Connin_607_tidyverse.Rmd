@@ -1,0 +1,62 @@
+---
+title: "Tidyverse_Connin"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Polling Results: support for gun control
+
+Feature article: https://projects.fivethirtyeight.com/guns-parkland-polling-quiz/
+
+All polls were taken after February 14, 2018, the date of the school shooting in Parkland, Florida
+
+```{r warning = FALSE}
+
+#load our libraries
+
+library(tidyverse)
+library(lubridate)
+library(magrittr)
+library(anytime)
+library(ggforce)
+
+# use readr to import/read csv file
+
+guns<-read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/poll-quiz-guns/guns-polls.csv")
+
+glimpse(guns)
+
+# use (lubridate), mutate (dplyr), relocate (dplyr), str_extract (stringr) to calculate the difference between polling start and end dates and put in numeric form. 
+
+guns$Start<-mdy(guns$Start)
+guns$End<-mdy(guns$End)
+guns%<>%mutate(Diff_Date = difftime(End, Start))%>%
+    relocate(Diff_Date, .after = End)%>%
+    mutate(Diff_Date = str_extract(Diff_Date, "^."))%>%
+    mutate(Diff_Date = as.numeric(as.character(Diff_Date )))
+
+glimpse(guns)
+
+```
+
+Extend possibility  - accomplish the same task without using lubridate. A hint: if you are not using lubridate, you will need to resolve the following error: x character string is not in a standard unambiguous format.
+
+```{r}
+
+# Create boxplot encoding percent support by party for each question and population
+
+guns%<>%mutate%>%pivot_longer(c("Republican Support", "Democratic Support"), names_to = 'Party', values_to = 'Percent_by_Party')%>%rename(Percent_Total_Support = Support)
+
+plot<-guns%>%
+        ggplot(aes(x=Party, y=Percent_by_Party))+
+        geom_boxplot(alpha=0.7, fill="blue")+
+        facet_grid_paginate(Population~Question, ncol=2, page=1, space="free_y")+
+        theme_bw()
+```
+
+Extend possibility - rework labels for Question and Party categories so that they are legible.
+
+

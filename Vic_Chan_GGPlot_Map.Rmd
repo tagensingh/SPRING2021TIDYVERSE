@@ -1,6 +1,8 @@
 ---
 title: "Plotting Maps using GGPlot"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 # Introduction
@@ -56,3 +58,68 @@ fig
 # Conclusion
 
 Creating maps is a essential skill when working with data. GGPlot does have the capability of creating and customizing maps, but can be very difficult to work with. I would recommend everyone to use plotly for their mapping needs as it easy, has lots of function, and creates a interactive map.
+
+# Extension (Michael)
+
+The Stanford Geospatial Center collects data about mass shootings by geographic location. I wanted to extend Vic's plotly demo to see how closely mass shootings match up with police shootings, location-wise. Here is just the mass shootings map:
+
+```{r ext1}
+
+#load mass shootings data
+msa_data = read.csv("https://raw.githubusercontent.com/mmippolito/cuny/main/data607/tidyverse/Stanford_MSA_Database.csv")
+fig2 <- msa_data %>%
+  select(Latitude, Longitude) %>%
+  rename(latitude = Latitude, longitude = Longitude) %>%
+  mutate(shooting = 'mass')
+
+fig2 <- fig2 %>%
+  plot_ly(
+    lat = ~latitude,
+    lon = ~longitude,
+    marker = list(color = "blue"),
+    type = 'scattermapbox'
+    ) 
+fig2 <- fig2 %>%
+  layout(
+    mapbox = list(
+      style = 'open-street-map',
+      zoom =2.5,
+      center = list(lon = -88, lat = 34))) 
+
+fig2
+
+```
+
+Now overlaying the police shooting data using two different colours:
+
+```{r ext2}
+
+#merge data sets
+fig1 <- data_set %>%
+  select(latitude, longitude) %>%
+  mutate(shooting = 'police shooting')
+fig2 <- msa_data %>%
+  select(Latitude, Longitude) %>%
+  rename(latitude = Latitude, longitude = Longitude) %>%
+  mutate(shooting = 'mass shooting')
+fig <- fig1 %>% rbind(fig2)
+
+fig <- fig %>%
+  plot_ly(
+    lat = ~latitude,
+    lon = ~longitude,
+    color = ~shooting,
+    type = 'scattermapbox'
+  )
+fig <- fig %>%
+  layout(
+    mapbox = list(
+      style = 'open-street-map',
+      zoom =2.5,
+      center = list(lon = -88, lat = 34)
+    )
+  )
+
+fig
+
+```

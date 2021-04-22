@@ -115,3 +115,37 @@ head(cp_sort)
 
 ```
 
+### Extension by Daniel Moscoe
+
+## 7: How do I sort a vector by length?
+
+**Answer**: Use dplyr's mutate() function together with str_length() to compute the length of each catchphrase. Use dplyr's arrange() function to sort the table by the new column of lengths.
+
+```{r}
+cp_by_len <- catch_phrases %>%
+  mutate("length" = str_length(catchphrase)) %>%
+  arrange(length)
+
+head(cp_by_len)
+```
+
+## 8: How do I wrap a string to create paragraphs with a maximum line width?
+
+**Answer**: Use stringr's str_wrap() function to insert line breaks along a string. Line breaks always occur between words so that no line exceeds the given width.
+
+```{r}
+cp_wrap <- catch_phrases %>%
+  mutate("wrapped" = str_wrap(catchphrase, width = 30))
+head(cp_wrap$wrapped)
+```
+
+## 9: How can I extract text that matches a regexp?
+
+**Answer**: Use str_extract with the regexp you wish to match. For this data, we can use this strategy (with moderate success) to extract the name of the character who delivers the catchphrase.
+
+```{r}
+cp_char <- catch_phrases %>%
+  mutate("character" = str_extract(catch_phrases$context, "^[^,]+(?=[,\\'])"))
+head(cp_char)
+```
+
