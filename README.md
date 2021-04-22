@@ -271,7 +271,8 @@ Initial Description
 Link
 
 Revision/Addition Description
-Link
+Vic Chan - Added more graphs to see the trend of the murder rates
+https://github.com/xvicxpx/SPRING2021TIDYVERSE/blob/main/Rathish_TydeVerse.Rmd
 ¬----
 
 
