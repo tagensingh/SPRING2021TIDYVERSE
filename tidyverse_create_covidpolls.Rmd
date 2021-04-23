@@ -1,0 +1,46 @@
+---
+title: "Tidyverse Create Assignment"
+author: "Claire Meyer"
+date: "3/28/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Summary
+
+This document will take some aggregated polling data from FiveThirtyEight, use TidyR to clean it up, and ggplot to do some lightweight plotting.
+
+Details on data found [here](https://github.com/fivethirtyeight/covid-19-polls).
+
+### Loading Data and filtering with Dplyr
+
+To start, we'll load the Tidyverse library, download the polling_data, and do some clean-up. I'll use dplyr's filter to filter for polls of the voting population (population == 'rv').
+
+```{r load}
+library(tidyverse)
+
+polling_data <- read.csv("http://raw.githubusercontent.com/fivethirtyeight/covid-19-polls/master/covid_approval_polls.csv", header=TRUE) %>%
+  filter(population == 'rv')
+```
+
+### Changing the shape of the data with TidyR
+
+I want to use Tidyr to change the shape of this data. I want to make this data wider. Right now it has at least 4 rows per poll, with each party (R, D, I) as well as an 'all' aggregated category. 
+
+```{r make-wider}
+polling_data_wide <- polling_data %>%
+  pivot_wider(names_from = 'party',values_from = c('approve','disapprove','sample_size'))
+```
+
+### Plotting with ggplot
+
+I want to make a quick plot of 'R' approval ratings of Trump and Biden.
+
+```{r plotting}
+ggplot(polling_data_wide, aes(x=approve_R))+
+  geom_histogram()+ facet_grid(subject ~ .)+
+  labs(title="Approval Ratings for Biden and Trump")
+```

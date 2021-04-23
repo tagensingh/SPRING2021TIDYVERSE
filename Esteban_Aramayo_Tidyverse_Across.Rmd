@@ -1,0 +1,160 @@
+---
+title: "Tidyverse Create project – Using across() function"
+author: "Esteban Aramayo"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    #number_sections: true
+    toc_float: true
+    collapsed: false
+    theme: united
+    highlight: tango
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+### Project summary
+
+In this project I will show how to compute summary statistics across multiple columns in R using the **dplyr's across()** function. In **dplyr's release 1.0.4 (2021-02-02)** the **across() function** makes **summarise(across())** and **mutate(across())** perform much faster than ever.
+
+
+### Why use the across() function
+
+In certain situations one needs to calculate summary statistics like mean/median/std or some other function on multiple columns. Usually we calculate summary statistics by manually doing it for each variable (column) one by one. In a dataset with many columns, it can be very tedious to calculate the summary statistics on such columns, especially if we want to combine the calculated statistics with the **summarise()** and **mutate()** functions.
+
+The dplyr's across() function allows us to apply the same statistical function to multiple variables at the same time and it allows us to combine them with the **summarise()** and **mutate()** functions.
+
+
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+
+if (!require("DT")) install.packages('DT')
+library(DT)
+```
+
+### Load & view the dataset
+
+For this project we will use the "Nifty 500 fundamental statistics" dataset, which includes Top 500 companies listed on the National Stock Exchange (NSE) in India.
+
+The original dataset can be downloaded from:
+
+https://www.kaggle.com/dhimananubhav/nifty-500-fundamental-statistics?select=nifty_500_stats.csv
+
+
+
+```{r}
+url <- 'https://raw.githubusercontent.com/esteban-data-enthusiast/DATA607/main/datasets/nifty_500_stats.csv'
+
+my_col_types <- cols(
+   index            = col_integer(),
+   company          = col_character(),
+   industry         = col_character(),
+   symbol           = col_character(),
+   market_cap       = col_double(),
+   current_value    = col_double(),
+   high_52week      = col_double(),
+   low_52week       = col_double(),
+   book_value       = col_double(),
+   price_earnings   = col_double(),
+   dividend_yield   = col_double(),
+   roce             = col_double(),
+   roe              = col_double(),
+   sales_growth_3yr = col_double()
+ )
+
+ds <- read_delim(file = url, delim = ";",
+                 col_names = TRUE, col_types = my_col_types)
+
+```
+
+Let's take a peak at our dataset
+
+```{r echo=FALSE}
+DT::datatable(ds,
+              options = list(pageLength = 5, autoWidth = TRUE),
+              width = 1000, height = 650, rownames = FALSE)
+```
+
+
+
+
+### Let's use the across() function
+
+Let's calculate the mean per industry for all numeric fields at once.
+
+```{r}
+# Use the .names argument to control the output names
+num_vars_means <- ds %>%
+  select(industry:sales_growth_3yr ) %>%
+  group_by(industry) %>%
+  summarise(across(where(is.numeric), mean, .names = "mean_{col}"))
+```
+
+Let's show the calculated means per numeric field per industry.
+
+```{r echo=FALSE}
+DT::datatable(num_vars_means,
+              options = list(pageLength = 5, autoWidth = TRUE),
+              width = 1000, height = 650, rownames = FALSE)
+```
+
+
+
+### Conclusions
+
+The dplyr's across() function is a very powerful one, which allows to calculate statistical functions on multiple columns at once. As a bonus, it also allows us to automatically name the calculated fields without having to do it manually.
+
+Also, instead of storing the calculated fields in a separate dataframe, we could also use the mutate() function to append those new fields to the original dataframe as new columns.
+
+
+## Extending the Vignette
+
+*Author: Claire Meyer* 
+
+From here, we can extend the vignette to leverage ggplot's functionality and compare these means. First, let's use a basic scatterplot to compare mean ROE and Mean Market Cap, and then compare to the total data: 
+
+```{r scatter}
+num_vars_means %>%
+   ggplot(aes(x=mean_market_cap,y=mean_dividend_yield)) +
+          geom_point(aes(color=factor(industry)))
+
+ds %>%
+   ggplot(aes(x=market_cap,y=dividend_yield)) +
+          geom_point(aes(color=factor(industry)))
+```
+We can also play with a geom_label or geom_text plot, to more easily see which industry mean falls where, though this has it's challenges (label sizing, namely): 
+
+```{r label}
+num_vars_means %>%
+   ggplot(aes(x=mean_market_cap,y=mean_dividend_yield)) +
+          geom_label(aes(color=factor(industry),label=industry))
+
+num_vars_means %>%
+   ggplot(aes(x=mean_market_cap,y=mean_dividend_yield)) +
+          geom_text(aes(color=factor(industry),label=industry))
+```
+
+
+We can also look at a histogram of market caps in all the original data, again with a view by industry, though at this number of industries it's a bit hard to discern: 
+
+```{r all-data}
+ds %>%
+   mutate(market_cap_k = market_cap/1000) %>%
+   ggplot(aes(x=market_cap_k,fill=factor(industry))) +
+   geom_histogram(binwidth=100) 
+```
+
+Finally, if we want to more visually size each industry, we can do so with geom_count().
+
+```{r counts}
+ds %>%
+   ggplot(aes(x=category,y=industry)) + geom_count()
+```
+
+

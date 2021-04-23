@@ -1,0 +1,43 @@
+---
+title: "TidyVerse"
+output: html_document
+autor: Dmitriy Burtsev
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## The Best NBA Players, According To RAPTOR.
+
+*file latest_RAPTOR_by_player.csv contains RAPTOR data for every player in the latest season.*
+
+```{r, warning=FALSE}
+df = read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/nba-raptor/modern_RAPTOR_by_player.csv", 
+                  col_names = TRUE) 
+
+head(df)
+```
+## 1A: basic ggplot
+poss - Possessions played
+mp - Minutes played
+
+```{r}
+df %>% ggplot(aes(x = mp, y = poss)) + 
+                geom_col(fill = "lightblue")
+```
+
+## 1B: How do I flip coordinates?
+```{r}
+df %>% ggplot(aes(x = mp, y = poss)) + 
+                geom_col(fill = "lightblue") + coord_flip()
+```
+
+## 2A: How do I change sort order?
+
+```{r}
+ggplot(df, aes(x = fct_reorder(player_name, poss), y = poss)) + 
+                geom_col(fill = "lightblue") + coord_flip()
+```
+
