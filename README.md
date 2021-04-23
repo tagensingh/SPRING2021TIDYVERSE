@@ -310,6 +310,15 @@ RPubs - https://rpubs.com/yathdeep/751620
 
 Revision/Addition Description
 Link
+
+
+TidyVerseExtend Assignment
+
+Github - https://github.com/yathdeep/SPRING2021TIDYVERSE/blob/main/TrishitaNath_TidyVerse_Create.rmd  
+RPubs - https://rpubs.com/yathdeep/759415  
+
+
+
 ¬----
 
 
