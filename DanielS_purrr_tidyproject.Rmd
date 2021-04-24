@@ -69,7 +69,28 @@ nest_data$median_wt<- nest_data$data%>%
 There are many other built in functions that are usfull in purrr that can be used to apply to lists of lists or lists of data frames. 
 
 
+**Additional examples, by Matt Lucich**
 
+If you have ever run into issues working with nested data, purrr's pluck function may be something that saves you time in the future. It is intuitive in its ability to accept integer positions (column, row), but also allows you to specify string names and accessor functions. Note, that if pluck receives positions/strings that do not exist it will return null, to receive errors instead, be sure to use the chuck function.
+
+```{r}
+
+# View dataframe
+nest_data
+
+# View nested dataframe
+nest_data$avg_mpg
+
+# Select the third column
+nest_data %>% pluck(3)
+
+# Select the second column and first row (which returns the nested dataframe)
+nest_data %>% pluck(2, 1)
+
+# Select the second column and second row, then the "disp" column of the nested dataframe
+nest_data %>% pluck(2, 2, "disp")
+
+```
 
 
 
