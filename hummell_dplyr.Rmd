@@ -6,6 +6,7 @@ output:
   html_document:
     theme: cerulean
     highlight: kate
+    code_folding: "show"
 ---
 
 ## Dplyr {.tabset .tabset-pills}
@@ -236,7 +237,8 @@ Furthermore, the ```rename()``` ^[https://dplyr.tidyverse.org/reference/rename.h
 inner_join(murders_2015, states_pop, by = 'state') %>% 
   select(c(1,2,4)) %>%
   mutate(murder_percent = (sum_2015_murders/population)*100) %>% 
-  rename("State" = "state", "2015 Murders" = "sum_2015_murders", "Population" = "population", "Percentage of Population Murdered"= "murder_percent") %>% 
+  rename("State" = "state", "2015 Murders" = "sum_2015_murders", 
+         "Population" = "population", "Percentage of Population Murdered"= "murder_percent") %>% 
   reactable(bordered = TRUE, striped = TRUE,
           highlight = TRUE, filterable = TRUE,  showPageSizeOptions = TRUE,
           showPagination = TRUE, pageSizeOptions = c(10, 25,50),
@@ -248,8 +250,11 @@ Lastly, as a New Jersey native and resident, I was curious to see the data for N
 inner_join(murders_2015, states_pop, by = 'state') %>% 
   select(c(1,2,4)) %>%
   mutate(murder_percent = (sum_2015_murders/population)*100) %>% 
-  rename("State" = "state", "2015 Murders" = "sum_2015_murders", "Population" = "population", "Percentage of Population Murdered"= "murder_percent") %>% 
-  filter(State == "New Jersey")
+  rename("State" = "state", "2015 Murders" = "sum_2015_murders", 
+         "Population" = "population", "Percentage of Population Murdered"= "murder_percent") %>% 
+  filter(State == "New Jersey")%>% 
+  reactable(bordered = TRUE, striped = TRUE,
+          highlight = TRUE)
 
 ```
 
