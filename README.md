@@ -200,8 +200,10 @@ Links:
 GitHub: https://github.com/gabbypaola/SPRING2021TIDYVERSE/blob/main/Tidyverse%20Project.Rmd  
 RPubs: https://rpubs.com/gpmartinez/753043
 
-Revision/Addition Description:
+Revision/Addition Description: Extended Joshua Hummell's TidyVerse CREATE on Dplyr
 Link:
+GitHub: https://github.com/gabbypaola/SPRING2021TIDYVERSE/blob/main/hummell_dplyr.Rmd
+RPubs: https://rpubs.com/gpmartinez/759617
 ¬----
 
 
