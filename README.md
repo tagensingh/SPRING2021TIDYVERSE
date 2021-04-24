@@ -64,8 +64,8 @@ Link: https://github.com/acatlin/SPRING2021TIDYVERSE/blob/main/Eric_Hirsch_607_G
 
 
 # Joseph C
-Initial Description
-Link
+A vignette utilizing ggplot and dyplr to graph various data. Included are some basic plots of data, maps of regions in the world, and a choropleth map of the 1940 US election. 
+https://rpubs.com/jmcon_22/752909
 
 Revision/Addition Description
 Link
