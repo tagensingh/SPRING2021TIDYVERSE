@@ -203,8 +203,8 @@ Initial Description - Demonstrate efficient string manipulation functions from s
 Github - https://github.com/mattlucich/SPRING2021TIDYVERSE/tree/mattlucich  
 RPubs - https://rpubs.com/mlucich/stringr-dplyr-tibble  
 
-Revision/Addition Description
-Link
+Revision/Addition Description - Matthew L extended Daniel S's purrr vignette with examples of pluck.
+Link - https://github.com/acatlin/SPRING2021TIDYVERSE/blob/main/DanielS_purrr_tidyproject.Rmd
 ¬----
 
 
