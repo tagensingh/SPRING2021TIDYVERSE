@@ -2,7 +2,9 @@
 title: "Tidyverse Recepie"
 author: "Maliat Islam"
 date: "4/8/2021"
-output: 
+output:
+  html_document:
+    code_folding: "hide"
   prettydoc::html_pretty:
     theme: leonids
 ---
@@ -24,7 +26,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #### https://www.kaggle.com/rashikrahmanpritom/disney-movies-19372016-total-gross
 
 
-```{r d, warning=FALSE, message=FALSE}
+```{r d, warning=FALSE, message=FALSE, results='hide'}
 library(dplyr)
 library(forcats)
 library(ggplot2)
