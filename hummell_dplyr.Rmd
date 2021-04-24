@@ -250,6 +250,7 @@ inner_join(murders_2015, states_pop, by = 'state') %>%
   mutate(murder_percent = (sum_2015_murders/population)*100) %>% 
   rename("State" = "state", "2015 Murders" = "sum_2015_murders", "Population" = "population", "Percentage of Population Murdered"= "murder_percent") %>% 
   filter(State == "New Jersey")
+
 ```
 
 
