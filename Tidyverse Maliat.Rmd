@@ -44,7 +44,9 @@ head(disney_movies_total_gross)%>%
       scroll_box(height = "500px", width = "100%")
 ```
 
-#### Only necessary rows and columns have been selected using Tidyverse package dplyr. For this assignment I am focusing on the Disney movies released from 1937 to 1954.
+#### Only necessary rows and columns have been selected using Tidyverse package dplyr. For this assignment I am focusing on the Disney movies released from 1937 to 1961.
+
+
 ```{r e}
 DisneyMovies<-
   disney_movies_total_gross %>%
@@ -54,6 +56,8 @@ DisneyMovies1<-
   DisneyMovies[1:10,]
 
 ```
+
+
 #### The dataframe has been factorized for the purpose of implementing categories. The movies have been categorized as musical,adventure,comedy and drama.Forcats from tidyverse works really well to manipulate categorical variable.
 
 ```{r f}
@@ -272,3 +276,39 @@ Alas, "f" is still near the bottom of the list, but random is random.
 ### Conclusion 2
 
 Factors make categories easy to use in R, and forcats makes it easy to manipulate them.
+
+### <span style="color:blue">Tidyverse Extend</span>
+        
+<span style="color:blue">Additionally, selecting movies release from 1937 to 1961 can be done using `filter()` function from the `dplyr` package as shown below.</span>
+
+<span style="color:red">**NOTE** The date in format *month/day/year* which it presently is, is most likely of class character. This can be verified with the function `class()` as shown below. In order to use the dates to filter, they can temporarily be modified using `mutate()`</span>
+
+
+```{r}
+
+class(disney_movies_total_gross$release_date)
+(DisneyMovies1_ext<-disney_movies_total_gross%>%
+                select(movie_title,release_date,total_gross)%>%
+                  filter(
+                    as.Date(release_date,format = "%m/%d/%Y") > "1937-1-1" &
+                    as.Date(release_date,format = "%m/%d/%Y") < "1961-12-1" )%>%
+                        mutate(comparison_movies=case_when(
+      total_gross < 81219150 ~ "Below Average",
+      total_gross > 81219150  & total_gross <83810000 ~ "Around Average",
+      TRUE ~ "Above Average"))%>%
+        select(movie_title,release_date, total_gross,comparison_movies)
+ )
+
+```
+
+
+```{r}
+summary(DisneyMovies1_ext$total_gross)
+```
+
+```{r}
+ggplot(data = DisneyMovies1_ext,aes(x = movie_title,fill = comparison_movies))+
+  geom_bar(position = "dodge")+
+  coord_flip()
+```
+
