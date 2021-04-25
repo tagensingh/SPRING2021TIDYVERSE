@@ -1,0 +1,258 @@
+---
+title: "Owens_607_tidyverse"
+author: "Henry Owens"
+date: "4/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+```
+
+# Lubridate, dplyr, ggplot and the tidyverse
+
+## This vignette uses Netflix data to explore some of the tidyverse functions
+
+
+
+### Handling date type data with Lubridate
+In this data set from Netflix, there is a column for date added. BUT it is stored as a string.  
+
+```{r load}
+
+url1 <- "https://raw.githubusercontent.com/hankowens/CUNY-MSDS/main/607/Data/netflix_titles.csv"
+netflix_df <- read.csv(url1)
+netflix_df$date_added[[1]]
+```
+
+With lubridate's `as_date` function maybe we can transform that into a date.  
+Well `as_date()` didn't work, but `mdy()` (also from `lubridate`) did the trick! Notice the original was in Month <day>, <year> (i.e., "August 14, 2020") format. 
+
+```{r dates}
+as_date(netflix_df$date_added[[1]])
+mdy(netflix_df$date_added[[1]])
+```
+### Formatting vectors and using dplyr 
+ 
+Next I will reformat the whole vector with `mdy()` and do some analysis with `lubridate` and `dplyr` functions. Using `dplyr`'s `group-by()` and `summarise()` we can look at what days had the most content added.  
+Piping operator `%>%`is super helpful for stringing and nesting functions together.
+
+```{r}
+netflix_df$date_added <- mdy(netflix_df$date_added)
+
+netflix_df %>% 
+  group_by(date_added) %>% 
+  summarise(count = n()) %>%  
+  arrange(desc(count)) #%>% head(20)
+
+```
+### floor_date
+This could be better: there are 1513 days when content was added to Netflix. The busiest days for new content seems to be the first of the month. But what if we wanted to look at just the year.  
+We can use `floor_date()` and `mutate()` to do just that.  
+
+```{r}
+netflix_df %>% 
+  mutate(year_added = floor_date(date_added, "year")) %>%  
+  group_by(year_added) %>% 
+  summarise(count = n()) %>%  
+  arrange(desc(count))
+```
+### Refining output with one more little function
+
+Now we can see the data grouped by year, but the output is kind of annoying: it lists the year followed by January 1. If we wrap the `floor_date()` function in `year()`, then we get the same data but looking much nicer: 
+
+```{r}
+
+netflix_df %>% 
+  mutate(year_added = year(floor_date(date_added, "year"))) %>%  
+  group_by(year_added) %>% 
+  summarise(count = n()) %>%  
+  arrange(desc(count))
+```
+### Weekdays with lubridate: wday()
+
+We can even use `lubridate` to show what day of the week is most common with `wday()` and `label=TRUE`:
+
+```{r}
+wday(netflix_df$date_added[[99]], label = TRUE)
+```
+
+Here is the data, plotted out over the course of the week. The busiest day for adding content is Friday.  
+
+```{r}
+p <- wday_df <- netflix_df %>% 
+  mutate(day_of_week_added = wday(date_added, label = TRUE)) %>%  
+  group_by(day_of_week_added) %>% 
+  filter(!is.na(day_of_week_added)) %>% 
+  summarise(count = n())  %>% 
+  ggplot(aes(x = day_of_week_added, y = count)) + geom_col() 
+
+p
+```
+
+### Multiple group_by (and also some stringr)
+
+Lastly, I want to look at what countries the content on Netflix comes from. Some of the country observations have more than one country, so for simplicity, I will use `str_replace_all` from `stringr` remove all but the first country. I am not sure what determines the ordering of the countries. 
+Notice you can stick the `floor_date` function inside the `group_by` instead of using another `mutate`.  
+Unsurprisingly, the United States, India and United Kingdom are represented at the top. 
+
+
+```{r, warning=FALSE}
+netflix_df$country <- str_replace_all(netflix_df$country, ",.*", "")
+netflix_df <- filter(netflix_df, country != "")
+netflix_df %>% 
+  group_by(year_added = year(floor_date(date_added, "year")), country) %>% 
+  summarise(count = n()) %>% 
+  arrange(desc(count))
+```
+
+### Using ggplot to visualize multiply group_by 
+
+Using `ggplot2` I plotted the count of year_added by country, leaving out the United States for clarity/scale and setting a minimum of 40 titles added.  
+
+```{r, warning=FALSE}
+p2 <- netflix_df %>% 
+  group_by(year_added = year(floor_date(date_added, "year")), country) %>% 
+  filter(country != "United States") %>% 
+  summarise(count = n()) %>% 
+  filter(count >= 40) %>% 
+  arrange(desc(count)) %>% 
+  ggplot(aes(x = year_added, y = count, colour = country)) + geom_line()
+
+p2
+```
+
+### Further questions
+
+
+There is plenty more information to examine in this dataset. For example only 57 movies/shows from the US that were added to Netflix in 2015 are still in this data. So there is a lot of turn over. 
+
+-------------------------------------------------------  
+
+It could also be interesting to use time series forecasting to statistically predict how the release cycle will play out in the future.  Since there seem to be cyclical peaks, as discussed above, a time series forecasting model may be able to pick up on these and plot out sensible predictions.  
+
+```{r include=F}
+library(tidymodels)
+library(timetk)
+library(modeltime)
+library(rstan)
+```
+
+Group the releases by date, as before, and filter out before 2016, when few releases happened.
+
+```{r}
+by_date <- netflix_df %>% 
+  group_by(date_added) %>% 
+  summarise(count = n()) %>%
+  drop_na() %>%
+  filter(date_added > "2015-12-31")
+
+plot_time_series(by_date, date_added, count, .interactive=F) +
+  ylab('New Releases') +
+  ggtitle("Netflix Releases by Day Since Jan. 2016")
+```
+
+Since releases by day vary so wildly, it might be more useful to pretend the goal is to predict monthly future releases.  
+
+Group by month, sum up releases for each month, and then ungroup. 
+
+```{r}
+by_month <- by_date %>%
+  mutate(yr_mo_flr = floor_date(date_added, "month")) %>%
+  group_by(yr_mo_flr) %>%
+  summarise(monthsum = sum(count)) %>%
+  ungroup()
+
+plot_time_series(by_month, yr_mo_flr, monthsum, .interactive=F) +
+  ylab('New Releases') +
+  ggtitle("Netflix Releases by Month Since Jan. 2016")
+```
+
+To do some ML on these data, the first step is to split the data into training and testing groups.  
+For time series, the best way is to chop off the most recent data for testing, and use the older dates for training.
+The `timetk` package, which provided the `plot_time_series` function above, also has a splitting function:
+
+```{r}
+splits <- by_month %>%
+  # 'assess' parameter is the testing portion.  Try one year here.
+  time_series_split(assess = '12 months', cumulative=T)
+# Visualize the split
+splits %>%
+  tk_time_series_cv_plan() %>%
+  plot_time_series_cv_plan(yr_mo_flr, monthsum, .interactive = F)
+```
+
+
+Because of where this split happens to be, and because the yearly numbers have only risen to that point, you can tell that the model is going to have a hard time forecasting that drop at the start of 2020.
+
+### A tidymodels pipeline for this task:  
+
+**Step 1) Create and prep a recipe for processing the data. ** 
+
+In the current context, this consists of engineering features from timestamps that were created with the `floor_date()` function earlier.  So all the releases for each month got attributed to the first day of that month, which blurs all the finer-grained details of release dates, such as day of week, or week of month. `step_timeseries_signature`, also from `timetk`, turns each datestamp part into a feature, so you have to add `step_rm` to the recipe to remove many details and avoid training a model on all sorts of data that aren't real.  For example, if 20 new releases dropped on July 4, they got grouped into a July 1 datestamp, and if that's a Wednesday and defaults to midnight, the model will learn from those fake features and overfit.
+
+The `step_fourier` function will make features reflecting seasonality, which we have reduced to monthly, quarterly, and yearly, in our case.  `step_dummy` is used to one-hot encode these features.  
+
+```{r}
+nflx_recipe <- recipe(monthsum ~ yr_mo_flr, training(splits)) %>%
+  step_timeseries_signature(yr_mo_flr) %>%
+  step_rm(contains('am.pm'), contains('hour'), contains('minute'),
+          contains('second'), contains('xts'), contains('wday'),
+          contains('week')) %>%
+  # focus on monthly, quarterly, and yearly
+  step_fourier(yr_mo_flr, period = c(30.42, 91.25, 365), K = 2) %>%
+  step_dummy(all_nominal())
+
+nflx_recipe %>%
+  prep() %>%
+  juice()
+```
+**Step 2)  Set up a `workflow()` to use the `recipe` from step 1, along with a model. ** 
+
+This is where the `modeltime` package comes in handy for this time series task.  It has a powerful hybrid model called `prophet_boost()` which is built to function seamlessly within the tidymodels world.  Prophet is Facebook's forecasting model for univariate time series, and XGBoost is one of the most successful ML models in recent years, using gradient boosting to train an ensemble of decision trees.  The fourier features engineered according to the recipe will hopefully provide some meaningful signal for the trees to split on.
+
+```{r}
+model_prophet_boost <- prophet_boost(seasonality_yearly = T) %>%
+  set_engine('prophet_xgboost')
+
+workflow_prophet_boost <- workflow() %>%
+  add_model(model_prophet_boost) %>%
+  add_recipe(nflx_recipe)  %>%
+  fit(training(splits))
+
+workflow_prophet_boost
+```
+
+
+**A calibration table would be especially helpful if comparing performances for several models**  
+
+But even with only one model, it stores potentially useful statistics from running the trained model on the test data.  
+
+
+```{r}
+calibrated_prophets <- modeltime_table(workflow_prophet_boost) %>%
+  modeltime_calibrate(testing(splits))
+calibrated_prophets %>%
+  modeltime_forecast(actual_data = by_month) %>%
+  plot_modeltime_forecast(.interactive = T)
+```
+
+As anticipated, the forecast (red line) is too high, but it definitely picked up on some of the month-to-month trends, since it seems to rise and fall somewhat in synch with the actual data.  
+
+In terms of forecasting for the rest of 2021, the way to proceed is to use the `workflow` to refit the model using the now-known 2020 data, and use this smarter model for future forecasts. 
+
+```{r warning=F}
+calibrated_prophets %>%
+  modeltime_refit(by_month) %>%
+  # set 'h' (for 'horizon') parameter to next 12 months
+  modeltime_forecast(h='12 months', actual_data = by_month) %>%
+  plot_modeltime_forecast(.interactive=F)
+```
+
+This forecasting is based on an [article](https://www.business-science.io/code-tools/2020/06/29/introducing-modeltime.html) from a `modeltime` creator, Matt Dancho
+
+
+---------------------------------------------------------------

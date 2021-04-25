@@ -1,0 +1,262 @@
+---
+title: "Tidyverse Vignette"
+author: "Joshua Hummell, Gabriella Martinez"
+date: "4/8/2021, 4/23/2021"
+output:
+  html_document:
+    theme: cerulean
+    highlight: kate
+    code_folding: "show"
+---
+
+## Dplyr {.tabset .tabset-pills}
+
+### TidyVerse Vignette CREATE
+#### {.tabset}
+
+##### Assignment Overview
+
+Your task here is to Create an Example.  Using one or more TidyVerse packages, and any dataset from fivethirtyeight.com or Kaggle, create a programming sample “vignette” that demonstrates how to use one or more of the capabilities of the selected TidyVerse package with your selected dataset. (25 points)  
+  
+Later, you'll be asked to extend an existing vignette.  Using one of your classmate’s examples (as created above), you'll then extend his or her example with additional annotated code. (15 points)  
+  
+You should clone the provided repository.  Once you have code to submit, you should make a pull request on the shared repository.  You should also update the README.md file with your example.  
+  
+After you’ve created your vignette, please submit your GitHub handle name in the submission link provided below. This will let your instructor know that your work is ready to be peer-graded.  
+  
+You should complete your submission on the schedule stated in the course syllabus.
+  
+##### Packages and Data
+```{r message=FALSE}
+library(dplyr)
+library(reactable)
+```
+
+```{r}
+murders <- read.csv('https://raw.githubusercontent.com/fivethirtyeight/data/master/murder_2016/murder_2015_final.csv')
+```
+
+##### select()
+
+**Hands down my favorite R package in Tidyverse is Dplyr**  
+Dplyr allows for easy data manipulation and, therefore, is highly useful for everyday work!  
+Select data columns with ease
+```{r}
+murders %>% select(state)
+```
+##### filter()
+easily filter data
+```{r}
+murders %>% 
+  filter(city == 'Baltimore')
+```
+##### select(), group_by(), summarise(), arrange()
+Easily Aggregate Date
+
+```{r}
+state <- murders %>% 
+  select(state, change) %>% 
+  group_by(state) %>% 
+  summarise(state_totals = sum(change)) %>% 
+  arrange(desc(state_totals))
+state
+```
+##### left_join()  
+and even join data
+ 
+```{r}
+states_pop <- read.csv('https://raw.githubusercontent.com/jhumms/DATA607/main/state_populations.csv')
+colnames(states_pop) <- tolower(colnames(states_pop))
+
+murders_state <- left_join(state, states_pop, by='state')
+
+murders_state
+```
+##### mutate()
+
+and, if that weren't enough, you can even make aggregations across columns very easily!
+
+```{r}
+murders_state$population <- as.numeric(murders_state$population)
+
+murders_state %>% 
+  mutate(murder_rate_by_pop = (state_totals / population) *100) %>% 
+  arrange(desc(murder_rate_by_pop))
+```
+ 
+ 
+### TidyVerse Vignette EXTEND
+#### {.tabset}
+##### Assignment Overview
+Dplyr has many functions useful for data transformation. The possibilities are endless! This extension vignette covers examples using the the functions noted in the tabs above. For more handy dplyr functions, check out this [cheatsheet](https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf)!  
+  
+Joshua's vignette and his dataset caught my attention. It looks like the ```murders```  dataset contains 83 observations with 5 variables: City, State, 2014 murder count (X2014_murders), 2015 murder count (X2015_murders), and the difference between the two years (change). He also added ```states_pop``` which has 51 observations and 4 variables.  
+  
+Note, the reactable^[https://glin.github.io/reactable/] package has been also used for the extended vignette for the purpose of narrowing the amount of data displayed on the page upon rendering to HTML. The usage of the reactable function will not be explained, please see the reference below for further detail.  
+
+  
+**Instructions**  
+Your task here is to Extend an Existing Example.  Using one of your classmate’s examples (as created above), extend his or her example with additional annotated code. (15 points)  
+  
+You should clone the provided repository.  Once you have code to submit, you should make a pull request on the shared repository.  You should also update the README.md file with your example.  
+  
+After you’ve extended your classmate's vignette, please submit your GitHub handle name in the submission link provided below.  This will let your instructor know that your work is ready to be peer-graded.  
+  
+You should complete your submission on the schedule stated in the course syllabus.  
+  
+
+
+##### glimpse(), slice(), distinct()
+Using dplyr's ```glimpse()```^[https://www.rdocumentation.org/packages/dplyr/versions/0.3/topics/glimpse] function, we can take a look at the data as well as their types. There are 83 rows and 5 columns.
+```{r}
+glimpse(murders)
+```
+The dplyr ```slice()```^[https://www.rdocumentation.org/packages/dplyr/versions/0.7.8/topics/slice] function is useful if you want only a 'slice' of the data where you specify an index row range. For example, below we have selected row indexes from 2 to 7.
+
+```{r}
+murders %>% 
+  slice(2:7)
+```
+
+
+Using dplyr's ```distinct()``` ^[https://dplyr.tidyverse.org/reference/distinct_all.html?q=distinct] function, we can see the list of distinct states in the ```murder``` dataset. Looks like there are 34 distinct cases, 33 states as well as the nation's capital noted as D.C.. 
+```{r}
+murders %>% 
+  distinct(state) %>% 
+  reactable(bordered = TRUE, striped = TRUE,
+          highlight = TRUE, filterable = TRUE,  showPageSizeOptions = TRUE,
+          showPagination = TRUE, pageSizeOptions = c(5, 10, 20),
+          defaultPageSize = 5)
+
+```
+
+##### top_n()
+Next, suppose you wanted the top 10 cities with the most murders in the year 2015. In order to extract the top 10 cities, we would use the ```top_n()```^[https://dplyr.tidyverse.org/reference/top_n.html] function as shown below. Note, if a variable is not specified in the function as we have below with X2015_murders, then the ```top_n()``` function will automatically extract the top n specifed by the last column in the dataset.
+```{r}
+murders %>% 
+  top_n(10, X2015_murders) %>% 
+  reactable(bordered = TRUE, striped = TRUE,
+          highlight = TRUE, filterable = TRUE,  showPageSizeOptions = TRUE,
+          showPagination = TRUE, pageSizeOptions = c(5, 10, 20),
+          defaultPageSize = 5)
+
+```
+Lets say now, instead of the top ten, you actually want the bottom 5 cities with the least murders from the year 2014. We can still use the ```top_n()``` function, the only difference will be is that we will add a minus (-) sign to the input.
+
+```{r}
+murders %>% 
+  top_n(-5, X2014_murders) %>% 
+  reactable(bordered = TRUE, striped = TRUE,
+          highlight = TRUE, filterable = TRUE,
+          defaultPageSize = 10)
+```
+
+##### mutate(), transmute(), arrange()
+Which cities had the greatest percent change in murder counts? The dataset already comes with a change column that give us the murders 2015 - murders 2014 value, however we would like to see this in a percentage. We can perform such calculation and add it as a new column using the ```mutate()```^[https://www.rdocumentation.org/packages/plyr/versions/1.8.6/topics/mutate] function.  
+Note, the ```round()```^[https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/Round] from baseR is used to round our percent_change value to the 2 decimal places by wrapping our percent change function and specifying the two decimal places.
+```{r}
+murders %>% 
+  mutate(percent_change = round(((X2015_murders-X2014_murders)/X2014_murders)*100,2)) %>% 
+  reactable(bordered = TRUE, striped = TRUE,
+          highlight = TRUE, filterable = TRUE,  showPageSizeOptions = TRUE,
+          showPagination = TRUE, pageSizeOptions = c(5, 10, 20),
+          defaultPageSize = 5)
+
+```
+
+Using our ```top_n()``` function as well as leveraging the pipe operator multiple times, we can see which top 5 cities had the highest percent increases, and arrange them in descending order using the ```arrange()```^[https://www.rdocumentation.org/packages/dplyr/versions/0.7.8/topics/arrange] function. 
+```{r}
+murders %>% 
+  mutate(percent_change = round(((X2015_murders-X2014_murders)/X2014_murders)*100,2)) %>% 
+  top_n(5,percent_change) %>% 
+  arrange(desc(percent_change)) %>% 
+  reactable(bordered = TRUE, striped = TRUE,
+          highlight = TRUE, filterable = TRUE,defaultPageSize = 5)
+```
+
+Alternatively, suppose you only wanted the percent_change column and wanted to leave the rest of the columns behind. In this case, the ```transmute()```^[https://www.rdocumentation.org/packages/dplyr/versions/0.7.8/topics/mutate] function comes in handy. Note, ```mutate()``` adds new variables and preserves existing variables whereas the ```transmute()``` function drops existing variables.
+```{r}
+murders %>% 
+  transmute(percent_change = round(((X2015_murders-X2014_murders)/X2014_murders)*100,2)) %>% 
+  reactable(bordered = TRUE, striped = TRUE,
+          highlight = TRUE, filterable = TRUE,  showPageSizeOptions = TRUE,
+          showPagination = TRUE, pageSizeOptions = c(5, 10, 20),
+          defaultPageSize = 5)
+```
+
+##### full_join(), inner_join(), anti_join()
+Next, we will experiment with the ```join()```^[https://www.rdocumentation.org/packages/dplyr/versions/0.7.8/topics/join] function first touched upon by Josh using ```left_join()```. As seen below, ```full_join()``` returns all rows and all columns from both ```murders``` and ```states_pop```. Where there are not matching values, the function returns NA for the ones missing. Note, the ```reactable()``` displays the NA values as empty cells. For example, take a look a the state of Arkansas, this state is not in the ```murders``` table, but is in ```states_pop``` and its values are empty with the exception of the values from the original ```states_pop``` table.  
+
+*Note, D.C. in the ```murders``` table needed to be changed to DC to match the format in the ```states_pop``` table.
+```{r}
+murders[5,2]='DC'
+```
+
+```{r}
+full_join(murders, states_pop, by = 'state') %>% 
+   reactable(bordered = TRUE, striped = TRUE,
+          highlight = TRUE, filterable = TRUE,  showPageSizeOptions = TRUE,
+          showPagination = TRUE, pageSizeOptions = c(10, 25,50),
+          defaultPageSize = 10)
+```
+
+The ```inner_join()``` function returns all rows from ```murders``` where there are matching values in ```states_pop```, and all columns from ```murders``` and ```states_pop```. If there are multiple matches between ```murders``` and ```states_pop()```, all combination of the matches are returned.
+```{r}
+inner_join(murders, states_pop, by = 'state') %>% 
+   reactable(bordered = TRUE, striped = TRUE,
+          highlight = TRUE, filterable = TRUE,  showPageSizeOptions = TRUE,
+          showPagination = TRUE, pageSizeOptions = c(10, 25,50),
+          defaultPageSize = 10)
+```
+
+Next, we'll check what states do not have murders reported in the ```murders``` table using ```anti_join()``` and the ```states_pop table```. Based on the below, we can see that there are 17 states that do not have murders reported on the ```murders``` table. The ```anti_join()``` function returned all rows from the ```states_pop``` table where there are not matching values in ```murders```, keeping just columns from the ```states_pop``` table.
+```{r}
+anti_join(states_pop, murders, by = 'state') %>% 
+   reactable(bordered = TRUE, striped = TRUE,
+          highlight = TRUE, filterable = TRUE,  showPageSizeOptions = TRUE,
+          showPagination = TRUE, pageSizeOptions = c(10, 25,50),
+          defaultPageSize = 10)
+```
+
+
+##### select(), rename()
+Assuming the population data is from 2015, we can see how much of the population was murdered by state. Using the ```select()```^[https://dplyr.tidyverse.org/reference/select.html] function, we can select only the columns we want to retain. ```select()``` can be used with either the column index numbers or the column names. Below is an example using the column index numbers. 
+```{r}
+murders_2015 <- murders %>% 
+  group_by(state) %>% 
+  summarise(sum_2015_murders = sum(X2015_murders)) %>% 
+  arrange(desc(sum_2015_murders))
+reactable(murders_2015,bordered = TRUE, striped = TRUE,
+          highlight = TRUE, filterable = TRUE,  showPageSizeOptions = TRUE,
+          showPagination = TRUE, pageSizeOptions = c(10, 25,50),
+          defaultPageSize = 10)
+```
+
+Furthermore, the ```rename()``` ^[https://dplyr.tidyverse.org/reference/rename.html] function can be used to rename the columns.
+```{r}
+inner_join(murders_2015, states_pop, by = 'state') %>% 
+  select(c(1,2,4)) %>%
+  mutate(murder_percent = (sum_2015_murders/population)*100) %>% 
+  rename("State" = "state", "2015 Murders" = "sum_2015_murders", 
+         "Population" = "population", "Percentage of Population Murdered"= "murder_percent") %>% 
+  reactable(bordered = TRUE, striped = TRUE,
+          highlight = TRUE, filterable = TRUE,  showPageSizeOptions = TRUE,
+          showPagination = TRUE, pageSizeOptions = c(10, 25,50),
+          defaultPageSize = 10)
+```
+
+Lastly, as a New Jersey native and resident, I was curious to see the data for New Jersey. To do so, I used the ```filter()```^[https://www.rdocumentation.org/packages/dplyr/versions/0.7.8/topics/filter] function to filter out my home state. 
+```{r}
+inner_join(murders_2015, states_pop, by = 'state') %>% 
+  select(c(1,2,4)) %>%
+  mutate(murder_percent = (sum_2015_murders/population)*100) %>% 
+  rename("State" = "state", "2015 Murders" = "sum_2015_murders", 
+         "Population" = "population", "Percentage of Population Murdered"= "murder_percent") %>% 
+  filter(State == "New Jersey")%>% 
+  reactable(bordered = TRUE, striped = TRUE,
+          highlight = TRUE)
+
+```
+
+
+
