@@ -83,7 +83,7 @@ Link
 Initial Description: Create custom color palettes for ggplot using hex numbers, RColorBrewer, and wesanderson. 
 Link: https://github.com/carlisleferguson/SPRING2021TIDYVERSE/blob/main/Carlisle_Ferguson_Tidyverse.Rmd
 
-Revision/Addition Description
+Revision/Addition Description: Used image rastering to update Claire Meyer's histogram of Republican Approval Ratings. 
 Link
 ¬----
 
