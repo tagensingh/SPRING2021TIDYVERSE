@@ -138,11 +138,13 @@ Use recipes inside of workflows to build modular ML pipelines in tidymodels.
 Exploring the purrr package in R.
 
 RPubs - [Rpubs Link](https://rpubs.com/bharbans/753096)
-GitHub - [github Link](https://github.com/bharbans/SPRING2021TIDYVERSE/blob/main/brad_harbans_purr/brad_harbans_purr.rmd)
+
+GitHub - [GitHub Link](https://github.com/bharbans/SPRING2021TIDYVERSE/blob/main/brad_harbans_purr/brad_harbans_purr.rmd)
 
 Revision/Addition Description : Extending Michael I's Work.
 
-Github - [github Link](https://github.com/bharbans/SPRING2021TIDYVERSE/blob/main/brad_harbans_extend/ippolito-joins.rmd)
+Github - [GitHub Link](https://github.com/bharbans/SPRING2021TIDYVERSE/blob/main/brad_harbans_extend/ippolito-joins.rmd)
+
 ¬----
 
 
