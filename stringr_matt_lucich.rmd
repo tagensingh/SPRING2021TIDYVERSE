@@ -115,3 +115,24 @@ head(cp_sort)
 
 ```
 
+## 7: How do I filter out catchphrases pertaining to a subject?
+
+**Answer**: Use `pull()` to convert column to vector, and `str_match()` to return matches of words in a "subject" vector:
+
+```{r}
+
+# Convert catchphrase column to vector
+cp_vec <- catch_phrases %>% pull(catchphrase)
+
+# define regex for words pertaining to a subject like "time"
+time <- "(?i).*(yesterday|today|tomorrow|day|time|hour|morning|afternoon|night|later|always).*"
+
+# match catchphrase column to subject regex
+cp_time <- cp_vec %>% str_match(time)
+
+# return phrases in a 'subject' vector
+cp_time <- cp_time[,1][is.na(cp_time[,1]) == FALSE]
+cp_time
+
+
+```
