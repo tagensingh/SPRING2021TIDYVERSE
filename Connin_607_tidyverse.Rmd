@@ -60,3 +60,59 @@ plot<-guns%>%
 Extend possibility - rework labels for Question and Party categories so that they are legible.
 
 
+### Extending to rework the labels (Henry Owens)
+
+I am going to try and fix the labels here. In ggplot2 you can use themes to manipulate the non-data components of plots, such as axes, gridlines, and labels.  
+There is a long list of all the [theme elements here](https://ggplot2.tidyverse.org/reference/theme.html).  
+It took a little guess work to figure out that the relevant theme element for this case is `strip.text.x.top`. Since it is `text` we can use `element_text()` and the `angle` argument to rotate the text.  
+
+```{r}
+guns%>%
+  ggplot(aes(x=Party, y=Percent_by_Party))+
+  geom_boxplot(alpha=0.7, fill="blue")+
+  facet_grid_paginate(Population~Question, ncol=2, page=1, space="free_y")+
+  theme(strip.text.x.top = element_text(angle = 90, hjust = 0))
+
+```
+
+One problem with this new plot is the rotated text at the top crowds out the actual plots. Obviously the bottom labels are still unreadable. 
+Replacing the dashes in the "Question" column with line breaks (using `str_replace_all`), will solve the crowding problem.  
+I will also create a new column for abbreviated party designations using `str_sub` to deal with the messy labels along the bottom. I set `xlab()` to "Party", so it looks more polished.  
+Using the different arguments in `theme()`, you can manipulate the superficial features of the plot.
+* `strip.text.x.top` is the text for the top row in this case it is the `Question` column. 
+* `strip.background.x` and `strip.background.y` refers to the boxes on the top and right hand sides of the plot.
+* `panel.background` refers to the plot background.
+* `panel.grid.major` sets the gridlines (in this case major) for the plot.
+* `plot.background` is the area behind the plot, facets, legends, etc.
+
+The theme elements each have [`element_` functions](https://ggplot2.tidyverse.org/reference/element.html):
+* `element_text` for text objects
+* `element_rect` for rectangle objects
+* `element_line` for lines
+
+```{r}
+# replace dashes with line breaks in question
+guns$Question <- str_replace_all(guns$Question, "-", "\n")
+# abbreviate party affiliation to D or R
+guns$Party_abbrev <- str_sub(guns$Party, 1, 1) 
+
+# fancy plot
+guns%>%
+  ggplot(aes(x=Party_abbrev, y=Percent_by_Party))+
+  geom_boxplot(alpha=0.7, fill="blue")+
+  facet_grid_paginate(Population~Question, ncol=2, page=1, space="free_y")+
+  theme(strip.text.x.top = element_text(angle = 90, hjust = 0, face = "italic"),
+        strip.background.x = element_rect(fill = "azure"),
+        strip.background.y = element_rect(fill = "antiquewhite"),
+        panel.background = element_rect(fill = "white"), 
+        panel.grid.major = element_line(linetype = 2, colour = "gray", size = 0.1), 
+        plot.background = element_rect(fill = "gray99")) + 
+  xlab("Party")
+
+```
+
+This isn't the slickest plot, but knowing how to tweak these components is very helpful!!
+
+Thanks to Sean for the original post! --Henry
+
+
