@@ -387,7 +387,7 @@ Initial Description
 Link https://raw.githubusercontent.com/dburtsev/CUNYR/master/vignette.Rmd
 
 Revision/Addition Description
-Link
+Link https://github.com/acatlin/SPRING2021TIDYVERSE/blob/main/Deepak-607-TidyVerse.Rmd
 ¬----
 
 
