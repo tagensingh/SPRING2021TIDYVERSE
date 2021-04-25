@@ -323,8 +323,9 @@ Link
 
 
 # Tage S
-Initial Description
-Link
+Initial Description - A brief exploration of the "tidyverse" package using its built-in libraries - Avacado Sales
+Github - https://raw.githubusercontent.com/tagensingh/SPS-DATA607-TIDYVERSE/main/data-607-tidyverse-TNS.Rmd
+RPubs - https://rpubs.com/tagensingh/SPS-DATA-607-TIDYVERSE
 
 Revision/Addition Description
 Link
