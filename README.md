@@ -635,7 +635,7 @@ Initial Description: I analyze data on Netflix content using handful of the tidy
 Link: https://github.com/hankowens/SPRING2021TIDYVERSE/blob/main/Owens_607_tidyverse_vignette.Rmd
 
 Revision/Addition Description
-Link
+Link: https://github.com/hankowens/SPRING2021TIDYVERSE/blob/main/Connin_607_tidyverse.Rmd
 ¬----
 
 
