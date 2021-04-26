@@ -681,8 +681,9 @@ RPubs - https://rpubs.com/yathdeep/759415
 
 
 # Ramnivas S
-Initial Description
-Link
+Initial Description - Dataset (COVID-19 World Vaccination Progress)from Kaggle. Tidyverse capabilities - glimpse, summary, select, rename, sample_n, group_by, ggplot
+GitHub Link: https://github.com/rnivas2028/SPRING2021TIDYVERSE/blob/main/RamnivasS-TidyverseCreate.Rmd
+RPubs Link: https://rpubs.com/rnivas2028/data607-tidyverse
 
 Revision/Addition Description
 Link
