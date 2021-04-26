@@ -90,3 +90,45 @@ a + labs(x = "Time", y = "Price in USD")
 b + labs(x = "Time", y = "Volume")
 ```
 
+### TidyVerse Extend -- Richard Zheng (github: schoolkidrich)
+
+```{r}
+# remove outliers using group_by() and filter()
+rates2 = rates %>%
+  group_by(Close)%>%
+  filter(between(Close, mean(Close) - (3 * sd(Close)), 
+                     mean(Close) - (3 * sd(Close))))
+
+# scatter plot with line of best fit
+rates2 %>%
+  ggplot(aes(x = Volume, y = Close))+geom_point()+geom_smooth(method = 'lm', formula = y~x)
+
+# linear model predicting Close price by Volume 
+m1 = lm(Close~log(Volume),rates2)
+summary(m1)
+
+
+# histogram of residuals show mostly normal distribution
+m1 %>%
+  resid()%>%
+  hist()
+
+# predicted values
+rates$predict_close = predict(m1,rates)
+
+# predicted close prices show much less volatility than what really happened (removing outliers caused my model to be innacurate)
+rates%>%
+  ggplot(aes(x=Date,y=predict_close))+geom_line(color = 'red')+geom_line(aes(x = Date,y=Close),color='blue')
+
+# model 2 without removing outliers and using open price
+m2 = lm(Close~Open+Volume,rates)
+summary(m2)
+
+# predictions by model
+rates$predict_close2 = predict(m2)
+
+# m2 seems to fit the data well 
+rates%>% 
+  ggplot(aes(x=Date))+geom_line(aes(y = Close), color='blue')+geom_line(aes(y = predict_close2), color='red')
+
+```
