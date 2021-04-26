@@ -170,7 +170,7 @@ strdist_join %>%
   reactable()
 
 ```
-### Stringdist Anti 
+### Stringdist Anti Join
 
 After performing the inner join I will perform an anti-join to see what did not match. 
 ```{r stringdist_anti_join}
@@ -181,6 +181,19 @@ frenchDepts %>%
 ```
 
 ### General Fuzzy Join Function
-I will now show the 
+I will now show the general fuzzyjoin package. I will feed it a custom matching function. This code performs the same task as the `stringdist_inner_join`, this is just to illustrate the custom matching function
 
+```{r general-fuzzy-join}
+match_fun <- function(v1,v2){
+  v1 <- str_to_lower(v1)
+  v2 <- str_to_lower(v2)
+  
+  stringdist::stringdist(v1,v2) <= 2
+  
+}
+  
+frenchDepts %>% 
+  fuzzy_join(df_dept, by=c("Department" = "departement"), match_fun = match_fun) %>% 
+  reactable()
+```
 ## References
