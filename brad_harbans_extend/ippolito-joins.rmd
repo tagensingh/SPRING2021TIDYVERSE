@@ -20,6 +20,8 @@ options(dplyr.summarise.inform = FALSE)
 library(tidyverse)
 library(knitr)
 library(fuzzyjoin)
+library(rvest)
+library(reactable)
 ```
 
 ## Joins in Tidyverse {.tabset}
@@ -33,14 +35,14 @@ These examples will demonstrate the use of Tidyverse inner and outer (left, righ
 # Load the départements dataset, converting the département code to int
 df_dept <- read.csv("https://raw.githubusercontent.com/mmippolito/cuny/main/data607/tidyverse/departements.csv", sep = ';')
 df_dept$departement_code <- as.integer(df_dept$departement_code)
-head(df_dept)
+head(df_dept) %>% reactable
 
 # Load the decedents dataset
 # For illustrative purposes, I filtered the table to only deaths of people
 # aged 103 or older and who died on 1/1/2019. This give us 8 rows:
 df_filt <- read.csv("https://raw.githubusercontent.com/mmippolito/cuny/main/data607/tidyverse/deces_2019_filt.csv", sep = ';')
 df_filt$departement_deces <- as.integer(df_filt$departement_deces)
-head(df_filt)
+head(df_filt) %>% reactable
 
 ```
 
@@ -53,7 +55,8 @@ Inner joins only choose rows where the selected keyed field is equal in each tab
 # Join the filtered decedents table with the départements table:
 df_inner <- df_filt %>% 
   inner_join(df_dept, by = c("departement_deces" = "departement_code"))
-df_inner
+df_inner %>% 
+  reactable()
 
 ```
 
@@ -65,7 +68,8 @@ If there hadn't been a corresponding departement in the departements table, that
 df_dept_filt <- df_dept %>% filter(departement != "Meurthe-et-Moselle")
 df_inner2 <- df_filt %>% 
   inner_join(df_dept_filt, by = c("departement_deces" = "departement_code"))
-df_inner2
+df_inner2 %>% 
+  reactable()
 
 ```
 
@@ -80,7 +84,8 @@ Left outer joins choose all rows from the left-hand table and only the data from
 # is missing (since we filtered it from the départements table).
 df_left <- df_filt %>% 
   left_join(df_dept_filt, by = c("departement_deces" = "departement_code"))
-df_left
+df_left%>% 
+  reactable()
 
 ```
 
@@ -95,7 +100,8 @@ Right outer joins choose all rows from the right-hand table and only the data fr
 # populated in the rows from the 8 rows in the decendents table.
 df_right <- df_filt %>% 
   right_join(df_dept_filt, by = c("departement_deces" = "departement_code"))
-df_right
+%>% 
+  reactable()
 
 ```
 
@@ -111,11 +117,14 @@ Full outer joins choose all rows from both the left-hand and right-hand tables.
 # Note how even the row with the missing département is displayed.
 df_full <- df_filt %>% 
   full_join(df_dept_filt, by = c("departement_deces" = "departement_code"))
-df_full
+df_full%>% 
+  reactable()
 
 ```
 
-### Joins using FuzzyJoin
+## Joins using FuzzyJoin {.tabset}
+
+### Overview
 
 The fuzzyjoin package is a variation on dplyr's join operations that allows matching not just on values that match between columns, but on inexact matching. This allows matching on:
 
@@ -133,4 +142,26 @@ The fuzzyjoin package is a variation on dplyr's join operations that allows matc
 
 One relevant use case is for classifying freeform text data (such as survey responses) against a finite set of options.[<http://varianceexplained.org/fuzzyjoin/>]
 
+### Obtaining Another Dataset
 
+I will be scraping the following table from (WikiPedia)[https://en.wikipedia.org/wiki/List_of_French_departments_by_population]. I will use this data to do a fuzzyjoin with Michael's dataset. 
+```{r import-wikipedia-department-data}
+url <- "https://en.wikipedia.org/wiki/List_of_French_departments_by_population"
+frenchDepts <- read_html(url) %>% 
+  html_nodes(xpath="/html/body/div[3]/div[3]/div[5]/div[1]/table") %>% 
+  html_table()
+
+frenchDepts <- frenchDepts[[1]]
+```
+
+### Stringdist Inner Join
+
+I will now perform an fuzzy inner join on the department columns. Note even though the spellings of the Departments are not consistent, matches are made. This is because the stringdist function by default uses the Optimal String Alignment distance between the columns upon which we want to join, and will join where that distance is less than 2. These are default parameters, the distance function used and the maximum acceptable distance can be set as needed.
+
+```{r stringdist_inner_join}
+strdist_join <- frenchDepts %>% 
+  stringdist_join(df_dept, by=c("Department" = "departement"))
+
+strdist_join %>% 
+  reactable()
+```
