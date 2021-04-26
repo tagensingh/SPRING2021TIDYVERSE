@@ -156,6 +156,9 @@ frenchDepts <- read_html(url) %>%
   html_table()
 
 frenchDepts <- frenchDepts[[1]]
+
+frenchDepts %>% 
+  reactable()
 ```
 
 ### Stringdist Inner Join
