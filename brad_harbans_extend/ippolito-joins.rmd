@@ -29,7 +29,7 @@ library(reactable)
 
 ### Overview
 
-These examples will demonstrate the use of Tidyverse inner and outer (left, right, full) joins. The dataset I used for the demonstration is a partial download of French deaths by département (state) for the year 2019. [@perez_2020]
+These examples will demonstrate the use of Tidyverse inner and outer (left, right, full) joins. The dataset I used for the demonstration is a partial download of French deaths by département (state) for the year 2019. ^[@perez_2020]
 
 ```{r datasets}
 
@@ -142,11 +142,13 @@ The fuzzyjoin package is a variation on dplyr's join operations that allows matc
 
 -   Genomic intervals, which include both a chromosome ID and (start, end) pairs, that overlap (genome_inner_join)
 
-One relevant use case is for classifying freeform text data (such as survey responses) against a finite set of options.[@robinson]
+One relevant use case is for classifying freeform text data (such as survey responses) against a finite set of options.^[@robinson]
+
+
 
 ### Obtaining Another Dataset
 
-I will be scraping the following table from (WikiPedia)[@wikipedia_2020]. I will use this data to do a fuzzyjoin with Michael's dataset. 
+I will be scraping the following table from (Wikipedia)^[@wikipedia_2020]. I will use this data to do a fuzzyjoin with Michael's dataset. 
 ```{r import-wikipedia-department-data}
 url <- "https://en.wikipedia.org/wiki/List_of_French_departments_by_population"
 frenchDepts <- read_html(url) %>% 
