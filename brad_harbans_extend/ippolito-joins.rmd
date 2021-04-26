@@ -3,7 +3,7 @@ title: "DATA607 - Tidyverse Assignment"
 author: 
   - "Michael Ippolito"
   - "Brad Harbans"
-date: "3/26/2021"
+date: "4/25/2021"
 output:
   html_document:
     df_print: paged
@@ -100,7 +100,8 @@ Right outer joins choose all rows from the right-hand table and only the data fr
 # populated in the rows from the 8 rows in the decendents table.
 df_right <- df_filt %>% 
   right_join(df_dept_filt, by = c("departement_deces" = "departement_code"))
-%>% 
+
+df_right %>% 
   reactable()
 
 ```

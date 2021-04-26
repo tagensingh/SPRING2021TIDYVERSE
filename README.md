@@ -145,6 +145,7 @@ Revision/Addition Description : Extending Michael I's Work.
 
 Github - [GitHub Link](https://github.com/bharbans/SPRING2021TIDYVERSE/blob/main/brad_harbans_extend/ippolito-joins.rmd)
 
+RPubs - [Rpubs Link - Revision]()
 ¬----
 
 
@@ -511,10 +512,15 @@ Forecast future monthly Netflix releases using `timetk` to engineer features and
 # Brad H
 Exploring the purrr package in R.
 
-[Rpubs](https://rpubs.com/bharbans/753096)
+RPubs - [Rpubs Link](https://rpubs.com/bharbans/753096)
 
-[github link](https://github.com/bharbans/SPRING2021TIDYVERSE/blob/main/brad_harbans_purr/brad_harbans_purr.rmd)
+GitHub - [GitHub Link](https://github.com/bharbans/SPRING2021TIDYVERSE/blob/main/brad_harbans_purr/brad_harbans_purr.rmd)
 
+Revision/Addition Description : Extending Michael I's Work.
+
+Github - [GitHub Link](https://github.com/bharbans/SPRING2021TIDYVERSE/blob/main/brad_harbans_extend/ippolito-joins.rmd)
+
+RPubs - [Rpubs Link](https://rpubs.com/bharbans/760533)
 ¬----
 
 # Eric H
