@@ -41,5 +41,20 @@ I want to make a quick plot of 'R' approval ratings of Trump and Biden.
 
 ```{r plotting}
 ggplot(polling_data_wide, aes(x=approve_R))+
-  geom_histogram()+ facet_grid(subject ~ .)
+  geom_histogram()+ facet_grid(subject ~ .)+
+  labs(title="Approval Ratings for Biden and Trump")
+```
+### Summary of Polls
+
+Get the number of pollster records in the dataset. where subject is trump
+
+```{r echo=TRUE, eval=TRUE}
+poll_data_all <- read_csv("http://raw.githubusercontent.com/fivethirtyeight/covid-19-polls/master/covid_approval_polls.csv")
+
+selected_polls <- select(poll_data_all, c("pollster", "sponsor", "party", "subject"))
+
+trump_filtered_polls <-filter(selected_polls, subject == "Trump")
+
+selected_poll_count <- trump_filtered_polls %>% count(pollster, name = "Trump_Count", sort = TRUE)
+head(selected_poll_count)
 ```

@@ -131,3 +131,9 @@ filter(murder_raw,str_length(murder_raw$city) > 9)
 In dplyr also there are so many verbs like pivot_longer,wider etc. which help us in getting the task done for specific required data view.
 
 
+## Dmitriy Burtsev add group by example
+```{r}
+df =summarise_at(group_by(murder_raw,state),vars(change),funs(sum))
+head(df)
+```
+
