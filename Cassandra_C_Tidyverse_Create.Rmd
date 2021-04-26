@@ -131,3 +131,33 @@ by_country_model <- by_country %>%
 
 head(by_country_model)
 ```
+## Tidyverse extend
+
+I really liked what Cassandra did with this data. She organized it in such a way that makes it prepped for some great analysis. I can leverage her work to further evaluate the data using the filter, arrange, and removeGrid functions for some intriguing data presentations.
+
+```{r}
+
+# perhaps this is arbitrary, but I'm going to focus on the "year" rows, so I'll start by filtering out intercepts
+by_country_year <- by_country_model %>%
+  filter(term == "year")
+by_country_year <- by_country_year %>% mutate_if(is.numeric, ~round(.,2))
+
+# now let's arrange by the estimate column
+df_country <- by_country_year %>% arrange(desc(by_country_year$estimate))
+
+#subset our data to focus only on the top 20 of these countries as arranged above
+df_country_20 <- df_country %>% slice(1:20)
+
+```
+
+
+Now let's visualize our subset
+
+```{r pressure, echo=FALSE}
+
+g <- ggplot(df_country_20, aes(x = Country.name, y = estimate)) +
+  geom_col(fill = "#0099f9") +
+  geom_text(aes(label = estimate), vjust = -0.5, size = 2)
+
+g + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
