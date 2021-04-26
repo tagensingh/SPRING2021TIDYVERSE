@@ -1,8 +1,8 @@
 ---
 title: "DATA607 - Tidyverse Assignment"
 author: 
-  - "Michael Ippolito"
-  - "Brad Harbans"
+  - "Michael Ippolito - Original"
+  - "Brad Harbans - Extended"
 date: "4/25/2021"
 bibliography: references.bib
 output:
