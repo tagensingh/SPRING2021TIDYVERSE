@@ -115,6 +115,29 @@ head(cp_sort)
 
 ```
 
+
+## 7: How do I filter out catchphrases pertaining to a subject?
+
+**Answer**: Use `pull()` to convert column to vector, and `str_match()` to return matches of words in a "subject" vector:
+
+```{r}
+
+# Convert catchphrase column to vector
+cp_vec <- catch_phrases %>% pull(catchphrase)
+
+# define regex for words pertaining to a subject like "time"
+time <- "(?i).*(yesterday|today|tomorrow|day|time|hour|morning|afternoon|night|later|always).*"
+
+# match catchphrase column to subject regex
+cp_time <- cp_vec %>% str_match(time)
+
+# return phrases in a 'subject' vector
+cp_time <- cp_time[,1][is.na(cp_time[,1]) == FALSE]
+cp_time
+
+
+```
+=======
 ### Extension by Daniel Moscoe
 
 ## 7: How do I sort a vector by length?
@@ -148,4 +171,44 @@ cp_char <- catch_phrases %>%
   mutate("character" = str_extract(catch_phrases$context, "^[^,]+(?=[,\\'])"))
 head(cp_char)
 ```
+
+
+### extension by Daniel Sullivan
+
+## 10: how can I make sure all of my strings are a uniform length.
+
+**Answer**: Use str_pad to pad strings with a selected character designating whether you want the padding at the begining, end or both. For this data we can pad the catchphrase column
+```{r}
+cp_pad<- catch_phrases%>%
+  mutate("pad_catchphrase" = str_pad(catchphrase,276, pad = " ", side = "left"))
+
+head(cp_pad$pad_catchphrase)
+```
+
+
+## 11: How do I trim whitespace from entries in a column.
+
+**Answer**: Use str_trim() denoting which side or both that you want to remove white space. For this we can clean the column we mad above using pad
+
+```{r}
+cp_pad$pad_catchphrase<- cp_pad$pad_catchphrase%>%
+  str_trim(side = "left")
+
+head(cp_pad$pad_catchphrase)
+```
+
+## 12: How do i cap the charecter length and add elipsis to the end that was truncated.
+
+**Answer** Use the str_trunc() function specifying the sting/strings you want to truncate, the side you want, and the string you want for an elipsis.
+
+```{r}
+cp_trunc<- catch_phrases$catchphrase%>%
+  str_trunc(40, side="right", ellipsis = "...")
+
+head(cp_trunc)
+```
+
+
+=======
+
 

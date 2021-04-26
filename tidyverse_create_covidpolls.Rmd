@@ -43,7 +43,6 @@ ggplot(polling_data_wide, aes(x=approve_R))+
   geom_histogram()+ facet_grid(subject ~ .)+
   labs(title="Approval Ratings for Biden and Trump")
 ```
-
 ### Summary of Polls
 
 Get the number of pollster records in the dataset. where subject is trump
