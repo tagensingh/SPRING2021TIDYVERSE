@@ -83,8 +83,8 @@ Link
 Initial Description
 Link
 
-Revision/Addition Description
-Link
+Revision/Addition Description: Used image rastering to update Claire Meyer's histogram of Republican Approval Ratings. 
+Link: https://github.com/carlisleferguson/SPRING2021TIDYVERSE/blob/main/Carlisle_Ferguson_Extension.Rmd
 ¬----
 
 
