@@ -1,5 +1,5 @@
 ---
-title: "Tidyverse Create Assignment"
+title: "Tidyverse Extend Assignment"
 author: "Claire Meyer"
 date: "3/28/2021"
 output: html_document
@@ -21,7 +21,6 @@ To start, we'll load the Tidyverse library, download the polling_data, and do so
 
 ```{r load}
 library(tidyverse)
-
 polling_data <- read.csv("http://raw.githubusercontent.com/fivethirtyeight/covid-19-polls/master/covid_approval_polls.csv", header=TRUE) %>%
   filter(population == 'rv')
 ```
