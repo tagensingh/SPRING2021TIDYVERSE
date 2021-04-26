@@ -310,11 +310,10 @@ Link
 
 
 # Tage S
-Initial Description
-Link
+Initial Description - 
+Github - https://github.com/tagensingh/SPS-DATA607-TIDYVERSE/blob/main/data-607-tidyverse-TNS.Rmd
+RPUBS - https://rpubs.com/tagensingh/SPS-DATA-607-TIDYVERSE
 
-Revision/Addition Description
-Link
 ¬----
 
 
