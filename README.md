@@ -685,8 +685,10 @@ Initial Description - Dataset (COVID-19 World Vaccination Progress)from Kaggle. 
 GitHub Link: https://github.com/rnivas2028/SPRING2021TIDYVERSE/blob/main/RamnivasS-TidyverseCreate.Rmd
 RPubs Link: https://rpubs.com/rnivas2028/data607-tidyverse
 
-Revision/Addition Description
-Link
+Revision/Addition Description - Added str_detect() and do() function ad 
+GitHub Link: https://github.com/rnivas2028/SPRING2021TIDYVERSE/blob/main/Deepak-607-TidyVerse.Rmd
+RPubs Link: https://rpubs.com/rnivas2028/data607-tidyverse-extn
+
 ¬----
 
 
