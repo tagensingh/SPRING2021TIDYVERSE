@@ -148,7 +148,7 @@ One relevant use case is for classifying freeform text data (such as survey resp
 
 ### Obtaining Another Dataset
 
-I will be scraping the following table from (Wikipedia)^[@wikipedia_2020]. I will use this data to do a fuzzyjoin with Michael's dataset. 
+I will be scraping the following table from [Wikipedia](https://en.wikipedia.org/wiki/List_of_French_departments_by_population)^[@wikipedia_2020]. I will use this data to do a fuzzyjoin with Michael's dataset. 
 ```{r import-wikipedia-department-data}
 url <- "https://en.wikipedia.org/wiki/List_of_French_departments_by_population"
 frenchDepts <- read_html(url) %>% 
