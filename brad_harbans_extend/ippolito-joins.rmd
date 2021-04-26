@@ -1,6 +1,8 @@
 ---
 title: "DATA607 - Tidyverse Assignment"
-author: "Michael Ippolito"
+author: 
+  - "Michael Ippolito"
+  - "Brad Harbans"
 date: "3/26/2021"
 output:
   html_document:
@@ -17,16 +19,16 @@ knitr::opts_chunk$set(echo = TRUE)
 options(dplyr.summarise.inform = FALSE)
 library(tidyverse)
 library(knitr)
-
+library(fuzzyjoin)
 ```
 
 ## Joins in Tidyverse {.tabset}
 
 ### Overview
 
-These examples will demonstrate the use of Tidyverse inner and outer (left, right, full) joins. The dataset I used for the demonstration is a partial download of French deaths by département (state) for the year 2019 (https://www.kaggle.com/lperez/death-and-population-in-france-19902019).
+These examples will demonstrate the use of Tidyverse inner and outer (left, right, full) joins. The dataset I used for the demonstration is a partial download of French deaths by département (state) for the year 2019 (<https://www.kaggle.com/lperez/death-and-population-in-france-19902019>).
 
-``` {r datasets}
+```{r datasets}
 
 # Load the départements dataset, converting the département code to int
 df_dept <- read.csv("https://raw.githubusercontent.com/mmippolito/cuny/main/data607/tidyverse/departements.csv", sep = ';')
@@ -112,3 +114,23 @@ df_full <- df_filt %>%
 df_full
 
 ```
+
+### Joins using FuzzyJoin
+
+The fuzzyjoin package is a variation on dplyr's join operations that allows matching not just on values that match between columns, but on inexact matching. This allows matching on:
+
+-   Numeric values that are within some tolerance (difference_inner_join)
+
+-   Strings that are similar in Levenshtein/cosine/Jaccard distance, or other metrics from the stringdist package (stringdist_inner_join)
+
+-   A regular expression in one column matching to another (regex_inner_join)
+
+-   Euclidean or Manhattan distance across multiple columns (distance_inner_join) - Geographic distance based on longitude and latitude (geo_inner_join)
+
+-   Intervals of (start, end) that overlap (interval_inner_join)
+
+-   Genomic intervals, which include both a chromosome ID and (start, end) pairs, that overlap (genome_inner_join)
+
+One relevant use case is for classifying freeform text data (such as survey responses) against a finite set of options.[<http://varianceexplained.org/fuzzyjoin/>]
+
+
