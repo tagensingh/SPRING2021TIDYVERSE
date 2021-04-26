@@ -28,6 +28,9 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(forcats)
 library(kableExtra)
+library(data.table)
+
+
 disney_movies_total_gross <- read.csv("https://raw.githubusercontent.com/maliat-hossain/FileProcessing/main/disney_movies_total_gross.csv")
 head(disney_movies_total_gross)%>% kable() %>% 
   kable_styling(bootstrap_options = "striped", font_size = 10) %>% 
@@ -99,3 +102,101 @@ ggplot(data = DisneyMovies4, aes(x = movie_title, fill = comparison_movies)) +
 ### Conclusion
 
 #### The plot shows most of the Disney movies have earned above average from the year 1937 to 1954.
+
+--------------------------------------------------------------------------------
+
+### Extension of code By Tage N Singh April 24 2021
+
+```{r tns_extension}
+
+library(ggplot2)
+library(latex2exp)
+
+dis_mov <- as.data.frame(disney_movies_total_gross)
+
+#dis_mov$genre == ""
+
+dis_mov$genre[dis_mov$genre == ""] <- "Unknown" # finxing the genre field for blank values
+
+#dis_mov$genre == ""
+
+dis_genre <- dis_mov %>%
+select(genre,total_gross,inflation_adjusted_gross) %>%
+group_by(genre) # grouping by genre
+  
+
+dis_genre_tots <- aggregate(cbind(total_gross,inflation_adjusted_gross)~genre,data=dis_genre,FUN=mean)
+
+dis_genre_tots$total_gross <- dis_genre_tots$total_gross/1000000
+
+dis_genre_tots$inflation_adjusted_gross <- dis_genre_tots$inflation_adjusted_gross/1000000
+
+head(dis_genre_tots, 13)
+
+
+summary(dis_genre_tots)
+
+
+
+```
+
+
+```{r tns_extension_2}
+
+library(lubridate)
+
+str(disney_movies_total_gross$release_date) # testing the format for date
+
+
+disney_movies_total_gross$year <- str_sub(disney_movies_total_gross$release_date, start= -4)
+
+dis_mov2 <- data.frame(disney_movies_total_gross)
+
+
+dis_year <- dis_mov2 %>%
+select(year,total_gross,inflation_adjusted_gross) %>%
+group_by(year, ) # grouping by year
+
+dis_year_tots <- aggregate(cbind(total_gross,inflation_adjusted_gross)~year,data=dis_year,FUN=mean)
+
+dis_year_tots$total_gross <- dis_year_tots$total_gross/1000000
+
+dis_year_tots$inflation_adjusted_gross <- dis_year_tots$inflation_adjusted_gross/1000000
+
+
+dis_year_tots$total_gross <- format(round(dis_year_tots$total_gross, 0), nsmall = 0)
+
+dis_year_tots$inflation_adjusted_gross <- format(round(dis_year_tots$inflation_adjusted_gross, 0), nsmall = 0)
+
+summary(dis_year_tots)
+
+
+str(dis_year_tots)
+
+dis_year_tots$year <- as.numeric(as.character(dis_year_tots$year))
+
+dis_year_tots$total_gross <- as.numeric(as.character(dis_year_tots$total_gross))
+
+dis_year_tots$inflation_adjusted_gross <- as.numeric(as.character(dis_year_tots$inflation_adjusted_gross))
+
+
+#ggplot(data = dis_year_tots, aes(x = year, y = total_gross))+
+#  geom_line(color = "#00AFBB", size = 2)
+
+
+
+ggplot(dis_year_tots, aes(x=year)) + 
+  geom_line(aes(y = total_gross), color = "#00AFBB", size=2) + 
+  geom_line(aes(y = inflation_adjusted_gross), color="red", size = 1) +
+  ggtitle("Comparison of Gross and Adjusted Gross Sales X $1000000") 
+
+
+
+
+```
+
+
+
+
+
+
