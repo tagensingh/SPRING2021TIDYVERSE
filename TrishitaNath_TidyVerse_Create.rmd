@@ -3,6 +3,8 @@ title: "Data 607 TidyVerse CREATE assignment"
 author: "Trishita Nath"
 date: "4/10/2021"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 In this assignment, you’ll practice collaborating around a code project with GitHub.  You could consider our collective work as building out a book of examples on how to use TidyVerse functions.
@@ -60,3 +62,40 @@ head(spi_matches_count)
 ## Conclusion
 
 I have demonstrated four capabilities of the dplyr package; these have been: reading a csv, filtering, selecting and summarising.
+
+
+
+# Extension (Deepak sharma)
+we can use another verbs(mutate,gather,arrange) to get more information
+
+The dplyr package provides a grammar for the manipulation of data–notably, in data frames or tibbles. used the mutate function to add a new column–a match ID–to the matches tibble.
+
+```{r}
+
+matches <- spi_matches %>%mutate(matchId = row_number())
+
+
+head(matches)
+
+
+```
+
+# tidyr - gather()
+The tidyr package is designed to facilitate reshaping data. used gather() function to reshape the matches tibble from wide to long format, gathering the separate team columns.
+
+```{r}
+
+matches <- matches %>% gather(-matchId, -date, -league_id, -league, key=team_number, value=name) %>% select(-team_number)
+head(matches)
+
+```
+# dplyr - arrange()
+The arrange function from dplyr enables the sorting of data based upon column values. Here, I arrange the spi_matches tibble by leagueid 
+
+
+```{r}
+spi_matches <- arrange(spi_matches, league_id)
+head(spi_matches)
+
+```
+
