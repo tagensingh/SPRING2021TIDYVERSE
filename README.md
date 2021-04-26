@@ -135,11 +135,14 @@ Use recipes inside of workflows to build modular ML pipelines in tidymodels.
 
 
 # Brad H
-Initial Description
-Link
+Exploring the purrr package in R.
 
-Revision/Addition Description
-Link
+RPubs - [Rpubs Link](https://rpubs.com/bharbans/753096)
+
+GitHub - [GitHub Link](https://github.com/bharbans/SPRING2021TIDYVERSE/blob/main/brad_harbans_purr/brad_harbans_purr.rmd)
+
+Revision/Addition Description : 
+
 ¬----
 
 
@@ -169,7 +172,12 @@ Link
 https://github.com/mmippolito/cuny/blob/main/data607/tidyverse/ippolito-joins.rmd
 
 Revision/Addition Description
-Link
+
+Brad H. Added more joins using the fuzzyjoin package.
+
+Github - [GitHub Link](https://github.com/bharbans/SPRING2021TIDYVERSE/blob/main/brad_harbans_extend/ippolito-joins.rmd)
+
+RPubs - [Rpubs Link - Revision](https://rpubs.com/bharbans/760533)
 ¬----
 
 
@@ -506,9 +514,11 @@ Forecast future monthly Netflix releases using `timetk` to engineer features and
 # Brad H
 Exploring the purrr package in R.
 
-[Rpubs](https://rpubs.com/bharbans/753096)
+RPubs - [Rpubs Link](https://rpubs.com/bharbans/753096)
 
-[github link](https://github.com/bharbans/SPRING2021TIDYVERSE/blob/main/brad_harbans_purr/brad_harbans_purr.rmd)
+GitHub - [GitHub Link](https://github.com/bharbans/SPRING2021TIDYVERSE/blob/main/brad_harbans_purr/brad_harbans_purr.rmd)
+
+Revision/Addition Description :
 
 ¬----
 
@@ -541,7 +551,12 @@ Link
 https://github.com/mmippolito/cuny/blob/main/data607/tidyverse/ippolito-joins.rmd
 
 Revision/Addition Description
-Link
+
+Brad H. Added more joins using the fuzzyjoin package.
+
+Github - [GitHub Link](https://github.com/bharbans/SPRING2021TIDYVERSE/blob/main/brad_harbans_extend/ippolito-joins.rmd)
+
+RPubs - [Rpubs Link - Revision](https://rpubs.com/bharbans/760533)
 ¬----
 
 
