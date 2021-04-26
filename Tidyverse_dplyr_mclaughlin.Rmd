@@ -1,0 +1,46 @@
+---
+title: "Tidyverse Create Assignment"
+author: "Evan McLaughlin"
+date: "4/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## Overview
+
+Below, I've created a sample “vignette” that shows the versatility of the Tidyverse package with a dataset. To do this, I've pulled a dataset from Kaggle that tracks monthly gold prices.  
+
+```{r gold}
+# read in the data
+gold <- read_csv("https://raw.githubusercontent.com/evanmclaughlin/ECM607/master/gold_annual.csv")
+head(gold)
+```
+
+There's not much to this dataset. Just the December of each year and average price of that month dating back to the beginning of the year in 1950. Let's see if we can extract anything of value.
+
+```{r}
+summary(gold)
+```
+
+```{r}
+# let's use ggplot to visualize the data in a way that might help us spot any spikes / dips in price and formulate hypotheses about the catalysts for these swings.
+
+g <- ggplot(gold, aes(x=Date, y=Price)) + geom_point() + labs(title = "Price of Gold Over Time", x = "Year", y = "Price") + geom_smooth(method=lm, color = "black")
+
+g + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+It seems that gold's price was especially stable prior to 1970. Let's cut out the prior to then and drill down on the remaining years using dplyr.
+
+```{r}
+gold_filt <- gold %>%
+  filter(Date > 1969) 
+
+g2 <- ggplot(gold_filt, aes(x=Date, y=Price)) + geom_point() + labs(title = "Price of Gold Over Time", x = "Year", y = "Price") + geom_smooth(method=lm, color = "black")
+
+g2 + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+The US experienced a good bit of inflation in the late 70s, and it looks as though gold served as a safe harbor during this time, as prices spiked. It also looks as though gold surged on a flight to quality during the financial crisis and has remained at historic highs since. Why? Well, while the US hasn't experienced inflation in the traditional sense, the largescale Quantitative Easing embarked upon by the Federal Reserve and Central Banks around the world has nonetheless stimulated the global demand for gold. A similar story is playing out in the crypto space. 

@@ -216,8 +216,8 @@ RPubs: https://rpubs.com/gpmartinez/759617
 
 
 # Evan M
-Initial Description
-Link
+Initial Description: Using dplyr and ggplot to filter and chart data on gold prices
+Link: https://rpubs.com/mclaueva/752997 
 
 Revision/Addition Description
 Link
