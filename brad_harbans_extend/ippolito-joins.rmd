@@ -4,6 +4,7 @@ author:
   - "Michael Ippolito"
   - "Brad Harbans"
 date: "4/25/2021"
+bibliography: references.bib
 output:
   html_document:
     df_print: paged
@@ -28,7 +29,7 @@ library(reactable)
 
 ### Overview
 
-These examples will demonstrate the use of Tidyverse inner and outer (left, right, full) joins. The dataset I used for the demonstration is a partial download of French deaths by département (state) for the year 2019 (<https://www.kaggle.com/lperez/death-and-population-in-france-19902019>).
+These examples will demonstrate the use of Tidyverse inner and outer (left, right, full) joins. The dataset I used for the demonstration is a partial download of French deaths by département (state) for the year 2019. [@perez_2020]
 
 ```{r datasets}
 
@@ -141,11 +142,11 @@ The fuzzyjoin package is a variation on dplyr's join operations that allows matc
 
 -   Genomic intervals, which include both a chromosome ID and (start, end) pairs, that overlap (genome_inner_join)
 
-One relevant use case is for classifying freeform text data (such as survey responses) against a finite set of options.[<http://varianceexplained.org/fuzzyjoin/>]
+One relevant use case is for classifying freeform text data (such as survey responses) against a finite set of options.[@robinson]
 
 ### Obtaining Another Dataset
 
-I will be scraping the following table from (WikiPedia)[https://en.wikipedia.org/wiki/List_of_French_departments_by_population]. I will use this data to do a fuzzyjoin with Michael's dataset. 
+I will be scraping the following table from (WikiPedia)[@wikipedia_2020]. I will use this data to do a fuzzyjoin with Michael's dataset. 
 ```{r import-wikipedia-department-data}
 url <- "https://en.wikipedia.org/wiki/List_of_French_departments_by_population"
 frenchDepts <- read_html(url) %>% 
@@ -157,7 +158,9 @@ frenchDepts <- frenchDepts[[1]]
 
 ### Stringdist Inner Join
 
-I will now perform an fuzzy inner join on the department columns. Note even though the spellings of the Departments are not consistent, matches are made. This is because the stringdist function by default uses the Optimal String Alignment distance between the columns upon which we want to join, and will join where that distance is less than 2. These are default parameters, the distance function used and the maximum acceptable distance can be set as needed.
+I will now perform an fuzzy inner join on the department columns. Note even though the spellings of the Departments are not consistent, matches are made. 
+
+N.B. The stringdist function by default uses the Optimal String Alignment distance between the columns upon which we want to join, and will join where that distance is less than 2. These are default parameters, the distance function used and the maximum acceptable distance can be set as needed. Also by default, an inner join is performed, other options are avialble using the `mode` parameter.
 
 ```{r stringdist_inner_join}
 strdist_join <- frenchDepts %>% 
@@ -165,4 +168,19 @@ strdist_join <- frenchDepts %>%
 
 strdist_join %>% 
   reactable()
+
 ```
+### Stringdist Anti 
+
+After performing the inner join I will perform an anti-join to see what did not match. 
+```{r stringdist_anti_join}
+frenchDepts %>% 
+  stringdist_anti_join(df_dept, by=c("Department" = "departement")) %>% 
+  reactable
+
+```
+
+### General Fuzzy Join Function
+I will now show the 
+
+## References
