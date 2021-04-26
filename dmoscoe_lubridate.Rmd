@@ -160,6 +160,28 @@ We can use durations to combine lengths of time in different units. How long is 
 dweeks(10) + dmonths(1) + ddays(19)
 ```
 
+Have you ever wanted to add and subtract days from your Date?
+
+```{r}
+as.Date("2021-04-24") %m+% months(6)
+```
+
+How about visualizing a day as a number? (1-7)
+```{r}
+wday(as.Date("2021-04-24"))
+```
+This can be used to easily aggregate data at the week level! For example, I recently used it to calculate the end of the business week for of my dates in my data. 
+```{r}
+Day <- as.Date("2021-10-24")
+# 
+weekday <- wday(Day)-1
+dts <- 7 - weekday
+Day + dts
+
+
+```
+
+
 #### Summary
 
 Lubridate contains functions that make it easier to work with dates and times. Working with dates and times is essential but, at times, surprisingly complex, because calendars and time zones contain many inconsistencies. Some fundamental tasks when working with date/times include those described in this vignette: creating date/time objects from strings and from individual components; using accessors to get and set components of date/times; and performing computations using durations. Lubridate contains other functionality for working with time zones and for dealing with time spans under different assumptions.

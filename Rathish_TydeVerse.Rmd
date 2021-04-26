@@ -91,4 +91,19 @@ ggplot(data=murder2016_5row, aes(x=city, y=increaseRt,color=city,fill=city)) +  
 
 ```
 
+# Extension (Vic Chan)
 
+We can also to see which city has the highest crime rates for 2015 and 2016 and see if there has been any change on which city has the highest crime rate
+
+
+```{r}
+murder2016Rt %>%
+  ggplot(aes(x=reorder(city, murders_2015), y=murders_2015)) + geom_bar(stat="identity") + coord_flip()
+```
+
+```{r}
+murder2016Rt %>%
+  ggplot(aes(x=reorder(city, murders_2016), y=murders_2016)) + geom_bar(stat="identity") + coord_flip()
+```
+
+We can see that Chicago and Houston still had the highest murder rate, but Houston murder rate drastically decreased in 2016 while Chicago murder rate stayed relatively the same. 

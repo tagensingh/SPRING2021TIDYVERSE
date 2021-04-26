@@ -1,0 +1,76 @@
+---
+title: "Carlisle Ferguson - Tidyverse"
+author: "Carlisle Ferguson"
+date: "4/11/2021"
+output: 
+  html_document
+    theme: 
+      flatly
+---
+
+## Enhancing ggplot Graphs with Custom Color Palettes
+
+### Step 1: Load the `tidyverse` library
+```{r}
+library(tidyverse)
+```
+### Step 2: Load in data 
+
+For this example, the `thanksgiving` data set from fivethirtyeight.com was used.
+```{r}
+data <- read.csv('https://raw.githubusercontent.com/fivethirtyeight/data/master/thanksgiving-2015/thanksgiving-2015-poll-data.csv')
+data <- filter(data, data$Do.you.celebrate.Thanksgiving. == 'Yes')
+data <- filter(data, data$What.is.typically.the.main.dish.at.your.Thanksgiving.dinner. != "")
+```
+
+### Step 3: Make an initial graph using `ggplot`
+
+Let's take a look at what people usually have for Thanksgiving dinner
+```{r}
+ggplot(data, aes(y=What.is.typically.the.main.dish.at.your.Thanksgiving.dinner.)) + geom_bar()
+```
+We've got a nice bar graph here, but it's looking a bit bland. It'd be nice to add some colors. First, let's take a look at doing this with ggplot's built in colors. 
+
+###Step 4: Exploring ggplot's colors
+
+By specifiying a fill value in aes, we can color the bars of the bar graph by type of thanksgiving dinner. 
+
+```{r}
+ggplot(data, aes(y=What.is.typically.the.main.dish.at.your.Thanksgiving.dinner., fill=What.is.typically.the.main.dish.at.your.Thanksgiving.dinner.)) + geom_bar()
+
+```
+This is looking nicer, but what if I want a different color palette? 
+
+### Step 5: Adding Custom Colors
+
+I picked a color blind friendly color palette `cbPalette` from [cookbook-r](http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/). You can also make your own color palette. The color palette can be added to the graph using `scale_fill_manual`. If you have a line graph or a point graph, you would use `scale_color_brewer` in lieu of `scale_fill_manual`.
+
+```{r}
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+ggplot(data, aes(y=What.is.typically.the.main.dish.at.your.Thanksgiving.dinner., fill=What.is.typically.the.main.dish.at.your.Thanksgiving.dinner.)) + geom_bar() + scale_fill_manual(values=cbPalette)
+```
+## For Extra Fun
+In addition to making your own color palette using hex numbers, there's also libraries of color palettes. Two popular ones are `RColorBrewer` and `wesanderson`. Let's take a look at both of those.
+```{r}
+library(RColorBrewer)
+library(wesanderson)
+```
+
+If you're unfamiliar with these libraries, `display.brewer.all` shows all the `RColorBrewer` palettes, and `names` can be used to show the names of the `wesanderson` palettes.
+```{r}
+display.brewer.all()
+names(wes_palettes)
+```
+Let's try using some of these palettes! 
+
+For `RColorBrewer`, use `scale_fill_brewer` and set `palette` to your desired palette.
+```{r}
+ggplot(data, aes(y=What.is.typically.the.main.dish.at.your.Thanksgiving.dinner., fill=What.is.typically.the.main.dish.at.your.Thanksgiving.dinner.)) + geom_bar() + scale_fill_brewer(palette = 'Dark2')
+```
+Since there are more survey answer options than the number of colors in `Zissou1`, the type is set to `continuous`. 
+```{r}
+ggplot(data, aes(y=What.is.typically.the.main.dish.at.your.Thanksgiving.dinner., fill=What.is.typically.the.main.dish.at.your.Thanksgiving.dinner.)) + geom_bar() + scale_fill_manual(values=wes_palette( name="Zissou1", 8, type="continuous"))
+
+```
+
