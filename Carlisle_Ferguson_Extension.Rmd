@@ -1,0 +1,84 @@
+---
+title: "Carlisle_Ferguson_Extension"
+author: "Carlisle Ferguson"
+date: "4/25/2021"
+output: 
+  html_document:
+    theme: flatly
+---
+
+##Introduction
+The purpose of this assignment is to extend a vignette created by another student. For my assignment, I will extend Claire Meyer's example by creating a few more graphs to analyze the data she prepared. Her work is below.
+
+
+### Summary
+
+This document will take some aggregated polling data from FiveThirtyEight, use TidyR to clean it up, and ggplot to do some lightweight plotting.
+
+Details on data found [here](https://github.com/fivethirtyeight/covid-19-polls).
+
+#### Loading Data and filtering with Dplyr
+
+To start, we'll load the Tidyverse library, download the polling_data, and do some clean-up. I'll use dplyr's filter to filter for polls of the voting population (population == 'rv').
+
+```{r load}
+library(tidyverse)
+
+polling_data <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/covid-19-polls/master/covid_approval_polls.csv", header=TRUE) %>%
+  filter(population == 'rv')
+```
+
+#### Changing the shape of the data with TidyR
+
+I want to use Tidyr to change the shape of this data. I want to make this data wider. Right now it has at least 4 rows per poll, with each party (R, D, I) as well as an 'all' aggregated category. 
+
+```{r make-wider}
+polling_data_wide <- polling_data %>%
+  pivot_wider(names_from = 'party',values_from = c('approve','disapprove','sample_size'))
+```
+
+#### Plotting with ggplot
+
+I want to make a quick plot of 'R' approval ratings of Trump and Biden.
+
+```{r plotting}
+ggplot(polling_data_wide, aes(x=approve_R))+
+  geom_histogram()+ facet_grid(subject ~ .)
+```
+
+## Extension
+
+For the extension, let's add some pizazz to the graph. A political histogram is a bit remiss without the Republicans' and Democrats' colors. Let's designate `subject` as `fill` in `aes` and use the `scale_fill_manual` add-on to add some color to the histogram. Let's also add a title to the graph using `ggtitle`. 
+
+```{r}
+ggplot(polling_data_wide, aes(x=approve_R, fill=subject))+
+  geom_histogram() + scale_fill_manual(values = c("blue", "red")) + ggtitle(label = "Republican Presidential Approval Ratings")
+```
+This graph is looking a lot spiffier, but it'd be even better with an image. Since the graph is about Republicans' approval ratings, let's add a Republican logo. To accomplish this, we'll need two additional libraries: `png` and `grid`. 
+
+```{r}
+library(png)
+library(grid)
+```
+
+The `readPNG` function can be used to read a png file. For this project, I saved the logo PNG in the project directory. To incorporate the PNG into the graph, we need to use `annotation_custom` and `rasterGrob`. I used trial and error to determine the values for the `width` and `height` parameters. I'd recommend starting with `unit(1, "npc")` and editing the values from there depending on if your image is distorted. 
+
+```{r}
+logo <- readPNG("logo.png")
+ggplot(data = polling_data_wide, aes(x = approve_R, fill=subject)) +
+  annotation_custom(rasterGrob(logo, 
+                               width = unit(.55,"npc"),
+                               height = unit(.75,"npc")), -Inf, Inf, -Inf, Inf) + geom_histogram() + scale_fill_manual(values = c("blue", "red")) + ggtitle(label = "Republican Presidential Approval Ratings")
+              
+
+```
+Lastly, the graph is now pretty busy with the logo, two colors, and the background lines. Let's get rid of those so the graph looks more clean. In `theme`, I changed the settings for `panel.grid.major`, `panel.grid.minor` and `panel.background` to `element_blank()`. I also set `axis.line` to be black. This was all personal preference; other combinations can also be used.
+```{r}
+logo <- readPNG("logo.png")
+ggplot(data = polling_data_wide, aes(x = approve_R, fill=subject)) +
+  annotation_custom(rasterGrob(logo, 
+                               width = unit(.55,"npc"),
+                               height = unit(.75,"npc")), -Inf, Inf, -Inf, Inf) + geom_histogram() + scale_fill_manual(values = c("blue", "red")) + ggtitle(label = "Republican Presidential Approval Ratings") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))
+```
+
