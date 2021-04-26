@@ -145,7 +145,8 @@ Revision/Addition Description : Extending Michael I's Work.
 
 Github - [GitHub Link](https://github.com/bharbans/SPRING2021TIDYVERSE/blob/main/brad_harbans_extend/ippolito-joins.rmd)
 
-RPubs - [Rpubs Link - Revision]()
+RPubs - [Rpubs Link - Revision](https://rpubs.com/bharbans/760533)
+
 ¬----
 
 
