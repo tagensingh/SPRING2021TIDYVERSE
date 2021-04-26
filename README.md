@@ -83,8 +83,8 @@ Link
 Initial Description
 Link
 
-Revision/Addition Description
-Link
+Revision/Addition Description: Used image rastering to update Claire Meyer's histogram of Republican Approval Ratings. 
+Link: https://github.com/carlisleferguson/SPRING2021TIDYVERSE/blob/main/Carlisle_Ferguson_Extension.Rmd
 ¬----
 
 
@@ -135,11 +135,14 @@ Use recipes inside of workflows to build modular ML pipelines in tidymodels.
 
 
 # Brad H
-Initial Description
-Link
+Exploring the purrr package in R.
 
-Revision/Addition Description
-Link
+RPubs - [Rpubs Link](https://rpubs.com/bharbans/753096)
+
+GitHub - [GitHub Link](https://github.com/bharbans/SPRING2021TIDYVERSE/blob/main/brad_harbans_purr/brad_harbans_purr.rmd)
+
+Revision/Addition Description : 
+
 ¬----
 
 
@@ -169,7 +172,12 @@ Link
 https://github.com/mmippolito/cuny/blob/main/data607/tidyverse/ippolito-joins.rmd
 
 Revision/Addition Description
-Link
+
+Brad H. Added more joins using the fuzzyjoin package.
+
+Github - [GitHub Link](https://github.com/bharbans/SPRING2021TIDYVERSE/blob/main/brad_harbans_extend/ippolito-joins.rmd)
+
+RPubs - [Rpubs Link - Revision](https://rpubs.com/bharbans/760533)
 ¬----
 
 
@@ -187,8 +195,8 @@ Initial Description - Demonstrate efficient string manipulation functions from s
 Github - https://github.com/mattlucich/SPRING2021TIDYVERSE/tree/mattlucich  
 RPubs - https://rpubs.com/mlucich/stringr-dplyr-tibble  
 
-Revision/Addition Description
-Link
+Revision/Addition Description -- TF added 7th example to Matt L stringr vignette...
+Link https://github.com/curdferguson/SPRING2021TIDYVERSE/blob/main/stringr_matt_lucich.rmd
 ¬----
 
 
@@ -310,11 +318,10 @@ Link
 
 
 # Tage S
-Initial Description
-Link
+Initial Description - 
+Github - https://github.com/tagensingh/SPS-DATA607-TIDYVERSE/blob/main/data-607-tidyverse-TNS.Rmd
+RPUBS - https://rpubs.com/tagensingh/SPS-DATA-607-TIDYVERSE
 
-Revision/Addition Description
-Link
 ¬----
 
 
@@ -506,9 +513,11 @@ Forecast future monthly Netflix releases using `timetk` to engineer features and
 # Brad H
 Exploring the purrr package in R.
 
-[Rpubs](https://rpubs.com/bharbans/753096)
+RPubs - [Rpubs Link](https://rpubs.com/bharbans/753096)
 
-[github link](https://github.com/bharbans/SPRING2021TIDYVERSE/blob/main/brad_harbans_purr/brad_harbans_purr.rmd)
+GitHub - [GitHub Link](https://github.com/bharbans/SPRING2021TIDYVERSE/blob/main/brad_harbans_purr/brad_harbans_purr.rmd)
+
+Revision/Addition Description :
 
 ¬----
 
@@ -541,7 +550,12 @@ Link
 https://github.com/mmippolito/cuny/blob/main/data607/tidyverse/ippolito-joins.rmd
 
 Revision/Addition Description
-Link
+
+Brad H. Added more joins using the fuzzyjoin package.
+
+Github - [GitHub Link](https://github.com/bharbans/SPRING2021TIDYVERSE/blob/main/brad_harbans_extend/ippolito-joins.rmd)
+
+RPubs - [Rpubs Link - Revision](https://rpubs.com/bharbans/760533)
 ¬----
 
 
@@ -620,7 +634,7 @@ Initial Description: I analyze data on Netflix content using handful of the tidy
 Link: https://github.com/hankowens/SPRING2021TIDYVERSE/blob/main/Owens_607_tidyverse_vignette.Rmd
 
 Revision/Addition Description
-Link
+Link: https://github.com/hankowens/SPRING2021TIDYVERSE/blob/main/Connin_607_tidyverse.Rmd
 ¬----
 
 

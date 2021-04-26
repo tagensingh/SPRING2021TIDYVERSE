@@ -3,13 +3,14 @@ title: "DATA607 TidyVerse Project"
 author: "Gabriella Martinez"
 date: "4/11/2021"
 output:
-      html_document:
+  html_document:
         toc: true
         toc_float: true
         number_sections: false
-        theme: sandstone
         highlight: tango
         font-family: "Arial"
+  prettydoc:html_pretty:
+    theme:cayman
 ---
 
 ### Assignment Overview
@@ -27,7 +28,7 @@ library(DT)
 
 ### Load the Data
 The data for this vignette was obtained from kaggle which includes the [NJ Transit Train data from 03/2018 - 05/2020](https://www.kaggle.com/pranavbadami/nj-transit-amtrak-nec-performance?select=2019_12.csv). Since this is a large dataset, I decided to focus on the last month I was taking the train to work which is the Northeast Corridor line. As such, I filtered the original 2020_01 file by line to only include the Northeast Corridor. I also filtered original file from Kaggle by column L (line) by "Northeast Corrdr" in order to reduce file size to save to GitHub (34,426 KB to 4,723 KB). 
-```{r}
+```{r,message=FALSE}
 x <- url("https://raw.githubusercontent.com/gabbypaola/DATA-607/main/2020_01%20NEC.csv")
 NEC <- read_csv(x)
 
@@ -95,6 +96,38 @@ NEC %>%
   xlab("Day of the Week")+
   ggtitle("Train counts by day for January 2020")
 ```
+###  Analyzing Delays:
+###  A new datasets named NEC3 has been created from rows 1 to 15 of NEC dataset to analyze delay for two specific train id.Delay times of train id 7858 and 7867 is compared.However 7867 has more delayed minutes than 7858
+
+```{r,message=FALSE,warning=FALSE}
+NEC3<-NEC[1:15,]
+head(NEC3)
+
+```
+### <span style="color:blue">Histogram1</span>
+
+<span style="color:blue">I have added a histogram from ggplot to project the delay of `train id` 7858 and 7867.</span>
+
+
+```{r,message=FALSE,warning=FALSE}
+
+p<-ggplot(NEC3, aes(x=delay_minutes, fill=train_id)) + geom_histogram()+facet_wrap(~train_id) 
+p
+```
+### <span style="color:blue">Histogram2</span>
+
+<span style="color:blue">I have added a second histogram from ggplot to project the delay of `train id` 7858 and 7867 by factorizing using fill.</span>
+
+```{r,message=FALSE,warning=FALSE}
+p1<-ggplot(NEC3, aes(x=NEC3$delay_minutes, fill=NEC3$train_id)) + geom_histogram() + facet_wrap(~train_id, ncol=1)
+p1
+```
+
+
+
+
+
+
   
 Additionally, we can use the update function to update a specified date such as 1/29/2020.
 ```{r}
