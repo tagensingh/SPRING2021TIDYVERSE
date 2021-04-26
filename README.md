@@ -337,11 +337,11 @@ Link
 
 
 # Richard Z
-Initial Description
-Link
+Initial Description: Manipulated dataset using TidyVerse pivot_longer() function
+Link: https://github.com/schoolkidrich/SPRING2021TIDYVERSE/blob/main/richardzheng_607_tidyverse.Rmd
 
-Revision/Addition Description
-Link
+Revision/Addition Description: created models, using TidyVerse on Sam Reeves example
+Link: https://github.com/schoolkidrich/SPRING2021TIDYVERSE/blob/main/ReevesDogeUSD.Rmd
 ¬----
 
 
