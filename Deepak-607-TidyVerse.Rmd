@@ -130,6 +130,10 @@ filter(murder_raw,str_length(murder_raw$city) > 9)
 ##  Conclusion 
 In dplyr also there are so many verbs like pivot_longer,wider etc. which help us in getting the task done for specific required data view.
 
+--------------------------------------------------------------------------------
+
+\clearpage
+
 
 ## Dmitriy Burtsev add group by example
 ```{r}
@@ -137,3 +141,25 @@ df =summarise_at(group_by(murder_raw,state),vars(change),funs(sum))
 head(df)
 ```
 
+--------------------------------------------------------------------------------
+
+\clearpage
+
+## Ramnivas Singh TidyVerse EXTEND Assignment 
+### str_detect()
+
+str_detect() is a command within filter() which requires the column name, followed by the letters (in quotes) to search for
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# str_detect() helper function
+df<-murder_raw %>% filter(str_detect(city,'New')) 
+head(df)
+
+```
+
+### do() function
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# do() function- Compute within groups
+df =summarise_at(group_by(murder_raw,state),vars(change),funs(sum))%>%do(head( . , 2))
+head(df)
+
+```

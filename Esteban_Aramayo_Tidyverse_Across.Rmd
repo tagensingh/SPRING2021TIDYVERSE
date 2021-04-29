@@ -113,3 +113,48 @@ The dplyr's across() function is a very powerful one, which allows to calculate 
 Also, instead of storing the calculated fields in a separate dataframe, we could also use the mutate() function to append those new fields to the original dataframe as new columns.
 
 
+## Extending the Vignette
+
+*Author: Claire Meyer* 
+
+From here, we can extend the vignette to leverage ggplot's functionality and compare these means. First, let's use a basic scatterplot to compare mean ROE and Mean Market Cap, and then compare to the total data: 
+
+```{r scatter}
+num_vars_means %>%
+   ggplot(aes(x=mean_market_cap,y=mean_dividend_yield)) +
+          geom_point(aes(color=factor(industry)))
+
+ds %>%
+   ggplot(aes(x=market_cap,y=dividend_yield)) +
+          geom_point(aes(color=factor(industry)))
+```
+We can also play with a geom_label or geom_text plot, to more easily see which industry mean falls where, though this has it's challenges (label sizing, namely): 
+
+```{r label}
+num_vars_means %>%
+   ggplot(aes(x=mean_market_cap,y=mean_dividend_yield)) +
+          geom_label(aes(color=factor(industry),label=industry))
+
+num_vars_means %>%
+   ggplot(aes(x=mean_market_cap,y=mean_dividend_yield)) +
+          geom_text(aes(color=factor(industry),label=industry))
+```
+
+
+We can also look at a histogram of market caps in all the original data, again with a view by industry, though at this number of industries it's a bit hard to discern: 
+
+```{r all-data}
+ds %>%
+   mutate(market_cap_k = market_cap/1000) %>%
+   ggplot(aes(x=market_cap_k,fill=factor(industry))) +
+   geom_histogram(binwidth=100) 
+```
+
+Finally, if we want to more visually size each industry, we can do so with geom_count().
+
+```{r counts}
+ds %>%
+   ggplot(aes(x=category,y=industry)) + geom_count()
+```
+
+

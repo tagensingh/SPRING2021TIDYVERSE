@@ -1,0 +1,165 @@
+---
+title: "DATA607 TidyVerse Project"
+author: "Gabriella Martinez"
+date: "4/11/2021"
+output:
+  html_document:
+        toc: true
+        toc_float: true
+        number_sections: false
+        highlight: tango
+        font-family: "Arial"
+  prettydoc:html_pretty:
+    theme:cayman
+---
+
+### Assignment Overview
+Clone the provided repository. Write a vignette using one TidyVerse package. Write a vignette using more than one TidyVerse packages.
+For this assignment I will be using the lubridate TidyVerse package using NJ Transit Train Data for the Northeast Corridor for the month of January 2020.
+
+### Packages
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(RCurl)
+library(DT)
+```
+
+### Load the Data
+The data for this vignette was obtained from kaggle which includes the [NJ Transit Train data from 03/2018 - 05/2020](https://www.kaggle.com/pranavbadami/nj-transit-amtrak-nec-performance?select=2019_12.csv). Since this is a large dataset, I decided to focus on the last month I was taking the train to work which is the Northeast Corridor line. As such, I filtered the original 2020_01 file by line to only include the Northeast Corridor. I also filtered original file from Kaggle by column L (line) by "Northeast Corrdr" in order to reduce file size to save to GitHub (34,426 KB to 4,723 KB). 
+```{r,message=FALSE}
+x <- url("https://raw.githubusercontent.com/gabbypaola/DATA-607/main/2020_01%20NEC.csv")
+NEC <- read_csv(x)
+
+head(NEC, 5)
+tail(NEC,5)
+```
+The lubridate pacakge touts many benefits for working with dates. For example, to get the current date or date-time you can use today() or now(). Lubridate can also recognize the system timezone. As you can see I am in the New York time zone. Lubridate also keeps daylight savings in mind and will print "EDT" as opposed to "EST" during daylight savings. A list of timezones can be requested as well which goes by the OlsonNames() as seen below. It contains a total of 593 time zone names:
+```{r}
+today()
+Sys.timezone()
+head(OlsonNames())
+length(OlsonNames())
+```
+
+### NJ Transit Northeast Corridor January 2020
+Using the NJ Transit data for the Northeast Corridor line for the month of January 2020, we can play with dates and times using the lubridate pacakge. The dmy, mdy, and ymd functions take a date, which can also be input as worded months, and will convert the date 01/31/2020 from the dataset into YYYY-MM-DD as follows:
+```{r}
+mdy(NEC$date[37692:37697])
+
+```
+Additional examples using dmy, mdy, and ymd functions with different input values:
+```{r}
+dmy(26051965)
+mdy("April 16 1924")
+ymd("2026 February 14")
+```
+### Time Zones
+Lubridate also has timezone related functions with_tz which changes the printing to include the specified timezone, and forxe_tz which changes the time. Timezone is important to specify early on when working with time sensitive data especial if converting dates using mdy_hm() because a function like mdy_hm(), dmy_hms(), ymd_hms() and others default the timezone to UTC which is Coordinated Universal Time (UTC). If the time is converted from UTC to EST even though the time was originally expressed in the data as EST (but not programmatically), this will create and unintentional time conversion. 
+```{r}
+timezone <- force_tz(mdy_hm(NEC$scheduled_time[17441]), "America/New_York")
+timezone
+
+# Changes printing
+with_tz(timezone, "America/Chicago")
+
+```
+
+### Accessor Functions
+You can also pull out individual parts of the date with the accessor functions year(), month(), mday() (day of the month), yday() (day of the year), wday() (day of the week), hour(), minute(), and second(). Such functions can come in handy if for example, you wanted to split up the scheduled_time and actual_time columns by time component.
+Below we have the example date of 1/29/2020 14:11. First we use the mdy_hm function to convert to YYYY-MM-DD HH:MM:SS TZ format to then use each of the above mentioned functions.
+```{r}
+datetime <- force_tz(mdy_hm(NEC$scheduled_time[33832]), "America/New_York")
+
+year(datetime)
+month(datetime)
+mday(datetime) 
+yday(datetime) #day of the year
+wday(datetime, label=TRUE, abbr = FALSE)
+hour(datetime)
+minute(datetime)
+```
+It is also possible to nest functions. For example, to see what day of the year 03/12/2020 is, you first need to input it into the mdy function, and then yday().
+```{r}
+yday(mdy(03122020))
+```
+
+
+A function such as wday() is useful to use for plotting what day of the week experiences the most amount of train rides. Based on the plot below, it looks like Thursday and Friday with Friday having the most train rides in and out of New York City. This is most likely because NJ Transit knows people want to get home on time for the weekend!
+```{r}
+NEC$scheduled_time <- force_tz(mdy_hm(NEC$scheduled_time), "America/New_York")
+NEC %>% 
+  mutate(wday = wday(scheduled_time, label = TRUE)) %>% 
+  ggplot(aes(x = wday)) +
+  geom_bar(fill="#f68060", alpha=.6, width=.4) +
+  xlab("Day of the Week")+
+  ggtitle("Train counts by day for January 2020")
+```
+###  Analyzing Delays:
+###  A new datasets named NEC3 has been created from rows 1 to 15 of NEC dataset to analyze delay for two specific train id.Delay times of train id 7858 and 7867 is compared.However 7867 has more delayed minutes than 7858
+
+```{r,message=FALSE,warning=FALSE}
+NEC3<-NEC[1:15,]
+head(NEC3)
+
+```
+### <span style="color:blue">Histogram1</span>
+
+<span style="color:blue">I have added a histogram from ggplot to project the delay of `train id` 7858 and 7867.</span>
+
+
+```{r,message=FALSE,warning=FALSE}
+
+p<-ggplot(NEC3, aes(x=delay_minutes, fill=train_id)) + geom_histogram()+facet_wrap(~train_id) 
+p
+```
+### <span style="color:blue">Histogram2</span>
+
+<span style="color:blue">I have added a second histogram from ggplot to project the delay of `train id` 7858 and 7867 by factorizing using fill.</span>
+
+```{r,message=FALSE,warning=FALSE}
+p1<-ggplot(NEC3, aes(x=NEC3$delay_minutes, fill=NEC3$train_id)) + geom_histogram() + facet_wrap(~train_id, ncol=1)
+p1
+```
+
+
+
+
+
+
+  
+Additionally, we can use the update function to update a specified date such as 1/29/2020.
+```{r}
+date <- mdy(NEC$date[33832])
+date <- update(date, year = 2020, month = 2, mday = 26) #changes month to 2 and date to 26
+date
+```
+
+
+### Durations
+Functions such as dseconds(), dminutes(), d()hours, ddays(), dweeks, and dyears() output a given duration in the form of secons along with its original input. As example, the delay_minutes column was taken and converted using dminutes to seconds in the delay_min_to_sec below.  
+
+```{r}
+NEC<- NEC %>% 
+  mutate(delay_min_to_sec = dminutes(NEC$delay_minutes))
+NECtable<-NEC[1:100,] 
+datatable(NECtable,options = list(pageLength = 5, dom = 'tip'), rownames = FALSE)
+```
+
+
+
+### Periods
+Time periods are another functionality offered by the lubridate package.As seen in the example below, lubridate allows a way to add days, weeks, months and years. 
+```{r}
+date2 <- mdy(NEC$date[1741])
+date2
+date2 + days(1)
+date2 + weeks(2)
+date2 + months(3)
+date2 + years(4)
+```
+
+
+^[https://lubridate.tidyverse.org/]
+^[https://r4ds.had.co.nz/dates-and-times.html]
